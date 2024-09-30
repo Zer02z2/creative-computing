@@ -20,33 +20,16 @@ const init = () => {
     { top: [14, 16], bottom: [20, 22] },
     { top: [16, 18], bottom: [18, 20] },
   ]
-  const dist = 100
+  const dist = 200
 
   const clockHands = Array.from({ length: 6 }, (anchor: ClockHand, index) => {
     const x = (index - 3 + 0.5) * dist + width / 2
-    const y = height / 2
+    const y = height / 2 - height * 0.1
     anchor = new ClockHand(x, y, {
-      radius: { inner: 5, outer: dist - 5 },
+      radius: { inner: 5, outer: dist / 2 },
       timeSlot: timeSlots[index],
     })
     return anchor
-  })
-
-  const activeClock = timeSlots.findIndex((slot) => {
-    const hour = time.getHours()
-    const conditionA = hour >= slot.top[0] && hour < slot.top[1]
-    const conditionB = hour >= slot.bottom[0] && hour < slot.bottom[1]
-    return conditionA || conditionB
-  })
-
-  clockHands.forEach((clockHand, index) => {
-    if (activeClock === index) {
-      clockHand.drawAngle({ hour: time.getHours(), minute: time.getMinutes() })
-    } else if (index < activeClock) {
-      clockHand.drawRight()
-    } else if (index > activeClock) {
-      clockHand.drawLeft()
-    }
   })
 
   const render = () => {
@@ -56,10 +39,28 @@ const init = () => {
 
     ctx.clearRect(0, 0, width, height)
 
+    const activeClock = timeSlots.findIndex((slot) => {
+      const hour = time.getHours()
+      const conditionA = hour >= slot.top[0] && hour < slot.top[1]
+      const conditionB = hour >= slot.bottom[0] && hour < slot.bottom[1]
+      return conditionA || conditionB
+    })
+
     ctx.lineWidth = 1
     ctx.strokeStyle = "black"
-    clockHands.forEach((clockHand) => {
+    clockHands.forEach((clockHand, index) => {
       clockHand.drawBody(ctx)
+      ctx.stroke()
+      if (activeClock === index) {
+        clockHand.drawAngle(ctx, {
+          hour: time.getHours(),
+          minute: time.getMinutes(),
+        })
+      } else if (index < activeClock) {
+        clockHand.drawRight(ctx)
+      } else if (index > activeClock) {
+        clockHand.drawLeft(ctx)
+      }
       ctx.stroke()
     })
   }

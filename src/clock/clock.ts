@@ -1,4 +1,4 @@
-import { drawCirlce, map } from "../myLibrary"
+import { drawCirlce, drawLine, map } from "../myLibrary"
 
 export class ClockHand {
   x: number
@@ -25,26 +25,33 @@ export class ClockHand {
   drawBody(ctx: CanvasRenderingContext2D) {
     drawCirlce(ctx, this.x, this.y, this.radius.inner)
   }
-  drawLeft() {
-    this.radian = 0
-    console.log(this.radian)
+  drawHand(ctx: CanvasRenderingContext2D) {
+    const x = this.radius.outer * Math.cos(this.radian) + this.x
+    const y = -this.radius.outer * Math.sin(this.radian) + this.y
+    drawLine(ctx, this.x, this.y, x, y)
   }
-
-  drawRight() {
+  drawLeft(ctx: CanvasRenderingContext2D) {
     this.radian = Math.PI
-    console.log(this.radian)
+    this.drawHand(ctx)
   }
-  drawAngle(time: { hour: number; minute: number }) {
+  drawRight(ctx: CanvasRenderingContext2D) {
+    this.radian = 0
+    this.drawHand(ctx)
+  }
+  drawAngle(
+    ctx: CanvasRenderingContext2D,
+    time: { hour: number; minute: number }
+  ) {
     if (time.hour >= this.timeSlot.top[0] && time.hour < this.timeSlot.top[1]) {
       const minutes = (time.hour - this.timeSlot.top[0]) * 60 + time.minute
-      this.radian = map(minutes, 0, 120, 0, Math.PI)
+      this.radian = map(minutes, 0, 120, Math.PI, 0)
     } else if (
       time.hour >= this.timeSlot.bottom[0] &&
       time.hour < this.timeSlot.bottom[1]
     ) {
       const minutes = (time.hour - this.timeSlot.bottom[0]) * 60 + time.minute
-      this.radian = map(minutes, 0, 120, 0, Math.PI) + Math.PI
+      this.radian = map(minutes, 0, 120, 2 * Math.PI, Math.PI)
     }
-    console.log(this.radian)
+    this.drawHand(ctx)
   }
 }

@@ -12,7 +12,7 @@ export default {
     rollupOptions: {
       input: {
         main: "/index.html",
-        week1: "/week1/index.html",
+        clock: "/clock/index.html",
       },
     },
   },
