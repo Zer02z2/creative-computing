@@ -8,6 +8,18 @@ export const Random = {
   },
 }
 
+export const map = (
+  target: number,
+  range1A: number,
+  range1B: number,
+  range2A: number,
+  range2B: number
+): number => {
+  const percentage = target / (range1B - range1A)
+  const value = range2A + (range2B - range2A) * percentage
+  return value
+}
+
 export const getElementPosition = (e: HTMLElement | HTMLInputElement) => {
   const box = e.getBoundingClientRect()
   const [x, y] = [box.left, box.top]

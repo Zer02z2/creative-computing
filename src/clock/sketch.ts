@@ -1,4 +1,3 @@
-import { drawCirlce } from "../myLibrary"
 import { ClockHand } from "./clock"
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement
@@ -7,17 +6,14 @@ const ctx = canvas.getContext("2d")
 const init = () => {
   if (!ctx) return
 
-  const time = new Date().getHours()
-  console.log(time)
+  const time = new Date()
 
   const { width, height } = canvas.getBoundingClientRect()
   canvas.width = width
   canvas.height = height
 
-  console.log(width)
-
   const timeSlots: ClockHand["timeSlot"][] = [
-    { top: [6, 8], bottom: [4, 8] },
+    { top: [6, 8], bottom: [4, 6] },
     { top: [8, 10], bottom: [2, 4] },
     { top: [10, 12], bottom: [0, 2] },
     { top: [12, 14], bottom: [22, 24] },
@@ -34,6 +30,23 @@ const init = () => {
       timeSlot: timeSlots[index],
     })
     return anchor
+  })
+
+  const activeClock = timeSlots.findIndex((slot) => {
+    const hour = time.getHours()
+    const conditionA = hour >= slot.top[0] && hour < slot.top[1]
+    const conditionB = hour >= slot.bottom[0] && hour < slot.bottom[1]
+    return conditionA || conditionB
+  })
+
+  clockHands.forEach((clockHand, index) => {
+    if (activeClock === index) {
+      clockHand.drawAngle({ hour: time.getHours(), minute: time.getMinutes() })
+    } else if (index < activeClock) {
+      clockHand.drawRight()
+    } else if (index > activeClock) {
+      clockHand.drawLeft()
+    }
   })
 
   const render = () => {
