@@ -15,7 +15,7 @@ export const map = (
   range2A: number,
   range2B: number
 ): number => {
-  const percentage = target / (range1B - range1A)
+  const percentage = (target - range1A) / (range1B - range1A)
   const value = range2A + (range2B - range2A) * percentage
   return value
 }

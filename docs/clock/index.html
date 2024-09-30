@@ -4,13 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clock</title>
-    <script type="module" crossorigin src="/creative-computing/assets/clock-DnoDjctl.js"></script>
-    <link rel="stylesheet" crossorigin href="/creative-computing/assets/clock-C58wc3KL.css">
+    <script type="module" crossorigin src="/creative-computing/assets/clock-7UXYu8z-.js"></script>
+    <link rel="stylesheet" crossorigin href="/creative-computing/assets/clock--styFPFR.css">
     <link rel="stylesheet" crossorigin href="/creative-computing/assets/style-Bd9egyGN.css">
   </head>
   <body>
     <main>
       <canvas id="canvas"></canvas>
-    </main>
+    </main>
+    <div id="control">
+      <div id="info-bar">
+        <p id="info">+0 hours</p>
+        <img id="refresh-button" src="data:image/svg+xml,%3csvg%20fill='%23000000'%20height='200px'%20width='200px'%20version='1.1'%20id='Capa_1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%20viewBox='0%200%20489.645%20489.645'%20xml:space='preserve'%3e%3cg%20id='SVGRepo_bgCarrier'%20stroke-width='0'%3e%3c/g%3e%3cg%20id='SVGRepo_tracerCarrier'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3c/g%3e%3cg%20id='SVGRepo_iconCarrier'%3e%3cg%3e%3cpath%20d='M460.656,132.911c-58.7-122.1-212.2-166.5-331.8-104.1c-9.4,5.2-13.5,16.6-8.3,27c5.2,9.4,16.6,13.5,27,8.3%20c99.9-52,227.4-14.9,276.7,86.3c65.4,134.3-19,236.7-87.4,274.6c-93.1,51.7-211.2,17.4-267.6-70.7l69.3,14.5%20c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-122.8-25c-20.6-2-25,16.6-23.9,22.9l15.6,123.8%20c1,10.4,9.4,17.7,19.8,17.7c12.8,0,20.8-12.5,19.8-23.9l-6-50.5c57.4,70.8,170.3,131.2,307.4,68.2%20C414.856,432.511,548.256,314.811,460.656,132.911z'%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/svg%3e" alt="refresh button" />
+      </div>
+      <input type="range" min="-100" max="100" value="0" id="slider" />
+    </div>
   </body>
 </html>
