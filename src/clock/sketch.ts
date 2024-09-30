@@ -1,17 +1,14 @@
 import { drawCirlce } from "../myLibrary"
+import { ClockHand } from "./clock"
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement
 const ctx = canvas.getContext("2d")
 
-interface ClockHand {
-  x: number
-  y: number
-  innerRadius: number
-  outerRadius: number
-}
-
 const init = () => {
   if (!ctx) return
+
+  const time = new Date().getHours()
+  console.log(time)
 
   const { width, height } = canvas.getBoundingClientRect()
   canvas.width = width
@@ -19,12 +16,23 @@ const init = () => {
 
   console.log(width)
 
+  const timeSlots: ClockHand["timeSlot"][] = [
+    { top: [6, 8], bottom: [4, 8] },
+    { top: [8, 10], bottom: [2, 4] },
+    { top: [10, 12], bottom: [0, 2] },
+    { top: [12, 14], bottom: [22, 24] },
+    { top: [14, 16], bottom: [20, 22] },
+    { top: [16, 18], bottom: [18, 20] },
+  ]
   const dist = 100
 
   const clockHands = Array.from({ length: 6 }, (anchor: ClockHand, index) => {
     const x = (index - 3 + 0.5) * dist + width / 2
     const y = height / 2
-    anchor = { x: x, y: y, innerRadius: 10, outerRadius: dist - 5 }
+    anchor = new ClockHand(x, y, {
+      radius: { inner: 5, outer: dist - 5 },
+      timeSlot: timeSlots[index],
+    })
     return anchor
   })
 
@@ -38,7 +46,7 @@ const init = () => {
     ctx.lineWidth = 1
     ctx.strokeStyle = "black"
     clockHands.forEach((clockHand) => {
-      drawCirlce(ctx, clockHand.x, clockHand.y, clockHand.innerRadius)
+      clockHand.drawBody(ctx)
       ctx.stroke()
     })
   }
