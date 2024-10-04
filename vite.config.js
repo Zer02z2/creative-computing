@@ -17,6 +17,7 @@ export default {
         musicVj: "/music-vj/index.html",
         heartbeats: "/heartbeats/index.html",
         fracturedVideo: "/fractured-video/index.html",
+        fishBodySimulation: "/fish-body-simulation/index.html",
       },
     },
   },
