@@ -55,15 +55,17 @@ class pixel {
     p.rectMode(p.CENTER)
     p.rect(this.x, this.y, vScale, vScale)
 
-    if (dist(this.ogX * vScale, this.ogY * vScale, mouseX, mouseY) < 100) {
+    if (
+      p.dist(this.ogX * vScale, this.ogY * vScale, p.mouseX, p.mouseY) < 100
+    ) {
       this.x = this.ogX * vScale
       this.y = this.ogY * vScale
     }
 
-    if (this.x < 0 || this.x > width) {
+    if (this.x < 0 || this.x > p.width) {
       this.xMovement *= -1
     }
-    if (this.y < 0 || this.y > height) {
+    if (this.y < 0 || this.y > p.height) {
       this.yMovement *= -1
     }
 
