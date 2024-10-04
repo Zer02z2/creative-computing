@@ -23,6 +23,7 @@ body {
 a {
   font-weight: 600;
   text-decoration: none;
+  color: black;
 }
 a:visited {
   color: black;

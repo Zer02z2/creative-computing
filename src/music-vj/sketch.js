@@ -1,12 +1,3 @@
-//Zongze Chen
-//Music - Robot Walking by Zhang Zhen Yue
-//Instruction:
-//Left clik == add shape;
-//1 == change shape of cursor;
-//2 == save current sketch and clear canvas;
-//3 == save current sketch and switch to a saved sketch randomly (need at least 3 sketches);
-//4 == save current sketch and auto-switch between saved sketches (need at least 3 sketches);
-
 var mysound, mic, fft
 var beatCount = 0
 var beatDetect = false
