@@ -15,6 +15,7 @@ export default {
         clock: "/clock/index.html",
         visibleTyping: "/visible-typing/index.html",
         musicVj: "/music-vj/index.html",
+        heartbeats: "/heartbeats/index.html",
       },
     },
   },
