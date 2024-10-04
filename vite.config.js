@@ -16,6 +16,7 @@ export default {
         visibleTyping: "/visible-typing/index.html",
         musicVj: "/music-vj/index.html",
         heartbeats: "/heartbeats/index.html",
+        fracturedVideo: "/fractured-video/index.html",
       },
     },
   },
