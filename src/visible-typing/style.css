@@ -1,0 +1,11 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  display: grid;
+  place-items: center;
+}
+canvas {
+  display: block;
+}

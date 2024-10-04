@@ -1,6 +1,6 @@
 :root {
   font-family: Helvetica;
-  background-color: #242424;
+  /* background-color: #242424; */
 }
 
 html,
@@ -15,4 +15,16 @@ canvas {
 
 body {
   background-color: #7e7e7e;
+}
+
+.inner-wrap {
+  padding: 1rem 2rem;
+}
+
+a {
+  font-weight: 600;
+  text-decoration: none;
+}
+a:visited {
+  color: black;
 }
