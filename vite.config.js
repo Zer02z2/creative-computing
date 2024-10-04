@@ -13,7 +13,8 @@ export default {
       input: {
         main: "/index.html",
         clock: "/clock/index.html",
-        visibleTyping: "/visible-typing.html",
+        visibleTyping: "/visible-typing/index.html",
+        musicVj: "/music-vj/index.html",
       },
     },
   },
