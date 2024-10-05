@@ -1,3 +1,14 @@
+:root {
+  font-family: Helvetica;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #c0c0c0;
+}
+
 #canvas {
   width: 100vw;
   height: 100vh;
