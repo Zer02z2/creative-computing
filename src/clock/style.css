@@ -1,6 +1,7 @@
 #canvas {
   width: 100vw;
   height: 100vh;
+  display: block;
 }
 
 #control {
@@ -28,7 +29,7 @@
   height: 20px;
   border-radius: 50%;
   border: solid 1px black;
-  background-color: #7e7e7e;
+  background-color: #c0c0c0;
   cursor: pointer;
 }
 
