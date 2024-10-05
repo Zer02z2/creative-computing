@@ -1,3 +1,7 @@
+import p5 from "p5"
+import "p5/lib/addons/p5.sound"
+import soundUrl from "./1.mp3"
+
 var mysound, mic, fft
 var beatCount = 0
 var beatDetect = false
@@ -18,102 +22,103 @@ var colorList = [
   "rgb(245, 228, 232)",
 ]
 
-function preload() {
-  soundFormats("mp3")
-  mysound = loadSound("1.mp3")
-}
-
-function setup() {
-  let cnv = createCanvas(windowWidth, windowHeight)
-
-  fft = new p5.FFT()
-  peakDetect = new p5.PeakDetect(20, 20000, 0.18, 20)
-
-  cnv.mousePressed(addShape)
-
-  mouseShape = randomShape()
-}
-
-function draw() {
-  background(0)
-  fft.analyze()
-  peakDetect.update(fft)
-  if (autoMode == true) {
-    if (peakDetect.isDetected) {
-      if (beatDetect == false) {
-        beatCount += 1
-        beatDetect = true
-      }
-      if (beatCount > 1) {
-        let k = currentNum
-        while (currentNum == k) {
-          currentNum = floor(random(0, maxNum))
-        }
-        beatCount = 0
-      }
-    } else {
-      beatDetect = false
-    }
+const sketch = (p) => {
+  p.preload = () => {
+    mysound = new Audio(soundUrl)
   }
-  if (started == false) {
-    noStroke()
-    fill(255)
-    triangle(
-      width / 2 - 50,
-      height / 2 - 50,
-      width / 2 - 50,
-      height / 2 + 50,
-      width / 2 + 50,
-      height / 2
-    )
-  } else {
-    strokeWeight(0.5)
+  p.setup = () => {
+    let cnv = p.createCanvas(p.windowWidth, p.windowHeight)
 
-    beginShape()
-    for (const i of fullList[currentNum]) {
-      stroke(255)
-      noFill()
-      vertex(i.getX, i.getY)
-    }
-    vertex(mouseShape.getX, mouseShape.getY)
-    endShape()
+    fft = new p5.FFT()
+    peakDetect = new p5.PeakDetect(20, 20000, 0.18, 20)
 
-    for (const i of fullList[currentNum]) {
-      strokeWeight(0.5)
-      i.update()
-    }
+    cnv.mousePressed(addShape)
 
-    mouseShape.x = mouseShape.getX = mouseX
-    mouseShape.y = mouseShape.getY = mouseY
-    mouseShape.update()
-  }
-}
-
-function addShape() {
-  if (started == false) {
-    started = true
-    mysound.play()
-    noCursor()
-  } else {
-    let newShape
-    if (mouseShape.class == "circle") {
-      newShape = Object.create(circles.prototype)
-      Object.assign(newShape, mouseShape)
-    }
-    if (mouseShape.class == "rectangle") {
-      newShape = Object.create(rectangles.prototype)
-      Object.assign(newShape, mouseShape)
-    }
-    if (mouseShape.class == "triangle") {
-      newShape = Object.create(triangles.prototype)
-      Object.assign(newShape, mouseShape)
-    }
-    newShape.col = 0
-    //newShape.col = random(colorList);
-    fullList[currentNum].push(newShape)
     mouseShape = randomShape()
   }
+  p.draw = () => {
+    background(0)
+    fft.analyze()
+    peakDetect.update(fft)
+    if (autoMode == true) {
+      if (peakDetect.isDetected) {
+        if (beatDetect == false) {
+          beatCount += 1
+          beatDetect = true
+        }
+        if (beatCount > 1) {
+          let k = currentNum
+          while (currentNum == k) {
+            currentNum = floor(random(0, maxNum))
+          }
+          beatCount = 0
+        }
+      } else {
+        beatDetect = false
+      }
+    }
+    if (started == false) {
+      noStroke()
+      fill(255)
+      triangle(
+        width / 2 - 50,
+        height / 2 - 50,
+        width / 2 - 50,
+        height / 2 + 50,
+        width / 2 + 50,
+        height / 2
+      )
+    } else {
+      strokeWeight(0.5)
+
+      beginShape()
+      for (const i of fullList[currentNum]) {
+        stroke(255)
+        noFill()
+        vertex(i.getX, i.getY)
+      }
+      vertex(mouseShape.getX, mouseShape.getY)
+      endShape()
+
+      for (const i of fullList[currentNum]) {
+        strokeWeight(0.5)
+        i.update()
+      }
+
+      mouseShape.x = mouseShape.getX = mouseX
+      mouseShape.y = mouseShape.getY = mouseY
+      mouseShape.update()
+    }
+  }
+
+  function addShape() {
+    if (started == false) {
+      started = true
+      mysound.play()
+      noCursor()
+    } else {
+      let newShape
+      if (mouseShape.class == "circle") {
+        newShape = Object.create(circles.prototype)
+        Object.assign(newShape, mouseShape)
+      }
+      if (mouseShape.class == "rectangle") {
+        newShape = Object.create(rectangles.prototype)
+        Object.assign(newShape, mouseShape)
+      }
+      if (mouseShape.class == "triangle") {
+        newShape = Object.create(triangles.prototype)
+        Object.assign(newShape, mouseShape)
+      }
+      newShape.col = 0
+      //newShape.col = random(colorList);
+      fullList[currentNum].push(newShape)
+      mouseShape = randomShape()
+    }
+  }
 }
+
+new p5(sketch)
 
 function keyPressed() {
   if (key == 1) {
