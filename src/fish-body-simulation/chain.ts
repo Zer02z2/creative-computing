@@ -1,0 +1,170 @@
+import { Circle } from "./circle"
+import { findAngleBetween, findTangent, isOnLeft, Point } from "./functions"
+
+export class Chain {
+  circles: Circle[]
+  x: number
+  y: number
+  gap: number
+  smallestAngle: number
+
+  constructor(
+    x: number,
+    y: number,
+    gap: number,
+    angle: number,
+    sizes: number[]
+  ) {
+    this.circles = []
+    this.x = x
+    this.y = y
+    this.gap = gap
+    this.smallestAngle = (angle * Math.PI) / 180
+    sizes.forEach((size) => {
+      let newCircle = new Circle(this.x, this.y, size)
+      this.circles.push(newCircle)
+      this.x += gap
+    })
+  }
+
+  update(
+    ctx: CanvasRenderingContext2D,
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number,
+    frameCount: number
+  ) {
+    for (let i = 0; i < this.circles.length; i++) {
+      if (i == 0) {
+        this.circles[i].followMouse(
+          ctx,
+          mouseX,
+          mouseY,
+          width,
+          height,
+          frameCount
+        )
+      }
+      // only detect contrain starting from the 3rd circle
+      else if (i == 1) {
+        this.circles[i].followBody(
+          ctx,
+          this.circles[i - 1],
+          undefined,
+          this.gap,
+          this.smallestAngle
+        )
+      } else {
+        this.circles[i].followBody(
+          ctx,
+          this.circles[i - 1],
+          this.circles[i - 2],
+          this.gap,
+          this.smallestAngle
+        )
+      }
+    }
+  }
+
+  drawSkin(ctx: CanvasRenderingContext2D) {
+    const points: Point[] = []
+    // connect the left side of chain
+    for (let i = 0; i < this.circles.length; i++) {
+      let radian = 0
+      // if not the first or last circle
+      if (i != 0 && i != this.circles.length - 1) {
+        let radianDelta = findAngleBetween(
+          this.circles[i],
+          this.circles[i + 1],
+          this.circles[i - 1]
+        )
+        let radianAlpha = findTangent(this.circles[i], this.circles[i - 1])
+
+        if (
+          isOnLeft(this.circles[i], this.circles[i + 1], this.circles[i - 1])
+        ) {
+          radian = radianAlpha - radianDelta / 2
+        } else {
+          radian = radianAlpha - (2 * Math.PI - radianDelta) / 2
+        }
+      } else if (i == 0) {
+        radian =
+          findTangent(this.circles[i], this.circles[i + 1]) + 0.5 * Math.PI
+      } else if (i == this.circles.length - 1) {
+        radian =
+          findTangent(this.circles[i], this.circles[i - 1]) - 0.5 * Math.PI
+      }
+      const point = calculatePoint(this.circles[i], radian)
+
+      if (i == 0) {
+        const headRadian =
+          findTangent(this.circles[i], this.circles[i + 1]) - 0.5 * Math.PI
+        const headPoint = calculatePoint(this.circles[i], headRadian)
+        points.push(headPoint)
+      }
+      points.push(point)
+    }
+    // connect the right side of chain
+    for (let i = this.circles.length - 1; i >= 0; i--) {
+      let radian = 0
+      // if not the first or last circle
+      if (i != 0 && i != this.circles.length - 1) {
+        let radianDelta = findAngleBetween(
+          this.circles[i],
+          this.circles[i - 1],
+          this.circles[i + 1]
+        )
+        let radianAlpha = findTangent(this.circles[i], this.circles[i + 1])
+
+        if (
+          isOnLeft(this.circles[i], this.circles[i - 1], this.circles[i + 1])
+        ) {
+          radian = radianAlpha - radianDelta / 2
+        } else {
+          radian = radianAlpha - (2 * Math.PI - radianDelta) / 2
+        }
+
+        if (i == 1) {
+          const point = calculatePoint(this.circles[i], radian)
+          points.unshift(point)
+        }
+      } else if (i == 0) {
+        radian =
+          findTangent(this.circles[i], this.circles[i + 1]) - 0.5 * Math.PI
+      } else if (i == this.circles.length - 1) {
+        radian =
+          findTangent(this.circles[i], this.circles[i - 1]) + 0.5 * Math.PI
+      }
+      const point = calculatePoint(this.circles[i], radian)
+      points.push(point)
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(points[0].x, points[0].y)
+    const length = points.length
+    for (let i = 1; i < length - 2; i++) {
+      const x2 = (points[i].x + points[i + 1].x) / 2
+      const y2 = (points[i].y + points[i + 1].y) / 2
+      ctx.quadraticCurveTo(points[i].x, points[i].y, x2, y2)
+    }
+    ctx.quadraticCurveTo(
+      points[length - 2].x,
+      points[length - 2].y,
+      points[length - 1].x,
+      points[length - 1].y
+    )
+    ctx.closePath()
+    ctx.stroke()
+  }
+}
+
+const calculatePoint = (circle: Circle, radian: number): Point => {
+  const displaceX = (circle.d / 2) * Math.cos(radian)
+  const displaceY = (circle.d / 2) * Math.sin(radian)
+
+  const x = circle.x + displaceX
+  const y = circle.y + displaceY
+
+  return { x: x, y: y }
+}
