@@ -48,7 +48,7 @@ export class Circle {
 
     const acc = Math.sqrt(displaceX ** 2 + displaceY ** 2)
 
-    circle(ctx, this.x, this.y, this.d)
+    //circle(ctx, this.x, this.y, this.d)
     return acc
   }
 
@@ -58,20 +58,20 @@ export class Circle {
     targetOfTarget: Circle | undefined,
     gap: number,
     smallestAngle: number,
-    oscillateRadian: number
+    oscillateRadian?: number
   ) {
     this.applyPullingForce(target, gap, oscillateRadian)
     if (targetOfTarget) {
       this.applyAngleConstrain(target, targetOfTarget, gap, smallestAngle)
     }
 
-    circle(ctx, this.x, this.y, this.d)
-    line(ctx, this.x, this.y, target.x, target.y)
+    // circle(ctx, this.x, this.y, this.d)
+    // line(ctx, this.x, this.y, target.x, target.y)
   }
 
-  applyPullingForce(target: Circle, gap: number, oscillateRadian: number) {
+  applyPullingForce(target: Circle, gap: number, oscillateRadian?: number) {
     let radian = findTangent(target, this)
-    radian += oscillateRadian
+    if (oscillateRadian) radian += oscillateRadian
 
     const displaceX = gap * Math.cos(radian)
     const displaceY = gap * Math.sin(radian)

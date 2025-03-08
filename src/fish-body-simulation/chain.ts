@@ -44,7 +44,7 @@ export class Chain {
       width,
       height
     )
-    this.frameCount += 10 * Math.log(0.5 * acceleration + 1)
+    this.frameCount += 15 * Math.log(0.3 * acceleration + 1)
 
     const oscillateScale = (Math.PI / 4) * Math.log(2 * acceleration + 1)
 
@@ -140,20 +140,19 @@ export class Chain {
       points.push(point)
     }
 
-    ctx.beginPath()
-    ctx.moveTo(points[0].x, points[0].y)
     const length = points.length
-    for (let i = 1; i < length - 2; i++) {
+    ctx.beginPath()
+    ctx.moveTo(
+      (points[0].x + points[length - 1].x) / 2,
+      (points[0].y + points[length - 1].y) / 2
+    )
+    //ctx.moveTo(points[0].x, points[0].y)
+
+    for (let i = 1; i < length - 1; i++) {
       const x2 = (points[i].x + points[i + 1].x) / 2
       const y2 = (points[i].y + points[i + 1].y) / 2
       ctx.quadraticCurveTo(points[i].x, points[i].y, x2, y2)
     }
-    ctx.quadraticCurveTo(
-      points[length - 2].x,
-      points[length - 2].y,
-      points[length - 1].x,
-      points[length - 1].y
-    )
     ctx.closePath()
     ctx.stroke()
   }
