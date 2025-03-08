@@ -1,3 +1,4 @@
+import { map } from "../myLibrary"
 import { Circle } from "./circle"
 import { findAngleBetween, findTangent, isOnLeft, Point } from "./functions"
 
@@ -7,6 +8,7 @@ export class Chain {
   y: number
   gap: number
   smallestAngle: number
+  frameCount: number
 
   constructor(
     x: number,
@@ -20,6 +22,7 @@ export class Chain {
     this.y = y
     this.gap = gap
     this.smallestAngle = (angle * Math.PI) / 180
+    this.frameCount = 0
     sizes.forEach((size) => {
       let newCircle = new Circle(this.x, this.y, size)
       this.circles.push(newCircle)
@@ -32,38 +35,35 @@ export class Chain {
     mouseX: number,
     mouseY: number,
     width: number,
-    height: number,
-    frameCount: number
+    height: number
   ) {
-    for (let i = 0; i < this.circles.length; i++) {
-      if (i == 0) {
-        this.circles[i].followMouse(
-          ctx,
-          mouseX,
-          mouseY,
-          width,
-          height,
-          frameCount
-        )
-      }
-      // only detect contrain starting from the 3rd circle
-      else if (i == 1) {
-        this.circles[i].followBody(
-          ctx,
-          this.circles[i - 1],
-          undefined,
-          this.gap,
-          this.smallestAngle
-        )
-      } else {
-        this.circles[i].followBody(
-          ctx,
-          this.circles[i - 1],
-          this.circles[i - 2],
-          this.gap,
-          this.smallestAngle
-        )
-      }
+    const acceleration = this.circles[0].followMouse(
+      ctx,
+      mouseX,
+      mouseY,
+      width,
+      height
+    )
+    this.frameCount += 10 * Math.log(0.5 * acceleration + 1)
+
+    const oscillateScale = (Math.PI / 4) * Math.log(2 * acceleration + 1)
+
+    for (let i = 1; i < this.circles.length; i++) {
+      const oscillateOffset = i * this.circles.length * Math.PI * 1.1368
+      const oscillateRadian =
+        Math.sin(this.frameCount + oscillateOffset) *
+        oscillateScale *
+        map(i, 0, this.circles.length, 0.5, 2)
+
+      this.circles[i].followBody(
+        ctx,
+        this.circles[i - 1],
+        // only detect contrain starting from the 3rd circle
+        this.circles[i - 2] || undefined,
+        this.gap,
+        this.smallestAngle,
+        oscillateRadian
+      )
     }
   }
 

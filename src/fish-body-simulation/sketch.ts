@@ -42,8 +42,7 @@ const init = () => {
       mousePosition.x,
       mousePosition.y,
       canvas.width,
-      canvas.height,
-      frameCount
+      canvas.height
     )
     chain.drawSkin(ctx)
   }

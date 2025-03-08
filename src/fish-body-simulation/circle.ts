@@ -14,6 +14,7 @@ export class Circle {
   x: number
   y: number
   d: number
+
   constructor(x: number, y: number, d: number) {
     this.x = x
     this.y = y
@@ -25,29 +26,30 @@ export class Circle {
     mouseX: number,
     mouseY: number,
     width: number,
-    height: number,
-    frameCount: number
+    height: number
   ) {
-    let x = lerp(this.x, mouseX, 0.1)
-    let y = lerp(this.y, mouseY, 0.1)
-    let radian =
+    const x = lerp(this.x, mouseX, 0.1)
+    const y = lerp(this.y, mouseY, 0.1)
+    const radian =
       findTangent({ x: this.x, y: this.y }, { x: x, y: y }) + 0.5 * Math.PI
 
-    let factor = map(
+    const factor = map(
       dist(this.x, this.y, mouseX, mouseY),
       0,
       Math.sqrt(width ** 2 + height ** 2),
       0,
       1
     )
-
-    let displaceX = Math.sin(frameCount * 0.5) * 70 * Math.cos(radian) * factor
-    let displaceY = Math.sin(frameCount * 0.5) * 70 * Math.sin(radian) * factor
+    const displaceX = Math.cos(radian) * factor
+    const displaceY = Math.sin(radian) * factor
 
     this.x = x + displaceX
     this.y = y + displaceY
 
+    const acc = Math.sqrt(displaceX ** 2 + displaceY ** 2)
+
     circle(ctx, this.x, this.y, this.d)
+    return acc
   }
 
   followBody(
@@ -55,21 +57,24 @@ export class Circle {
     target: Circle,
     targetOfTarget: Circle | undefined,
     gap: number,
-    smallestAngle: number
+    smallestAngle: number,
+    oscillateRadian: number
   ) {
-    this.applyPullingForce(target, gap)
+    this.applyPullingForce(target, gap, oscillateRadian)
     if (targetOfTarget) {
       this.applyAngleConstrain(target, targetOfTarget, gap, smallestAngle)
     }
+
     circle(ctx, this.x, this.y, this.d)
     line(ctx, this.x, this.y, target.x, target.y)
   }
 
-  applyPullingForce(target: Circle, gap: number) {
+  applyPullingForce(target: Circle, gap: number, oscillateRadian: number) {
     let radian = findTangent(target, this)
+    radian += oscillateRadian
 
-    let displaceX = gap * Math.cos(radian)
-    let displaceY = gap * Math.sin(radian)
+    const displaceX = gap * Math.cos(radian)
+    const displaceY = gap * Math.sin(radian)
 
     this.x = target.x + displaceX
     this.y = target.y + displaceY
@@ -82,11 +87,11 @@ export class Circle {
     smallestAngle: number
   ) {
     // find the angle between
-    let radianDelta = findAngleBetween(center, this, theOtherPoint)
+    const radianDelta = findAngleBetween(center, this, theOtherPoint)
 
     // if smaller than the constrain
     if (radianDelta < smallestAngle) {
-      let theOtherPointRadian = findTangent(center, theOtherPoint)
+      const theOtherPointRadian = findTangent(center, theOtherPoint)
 
       let radian
       if (isOnLeft(center, theOtherPoint, this)) {
