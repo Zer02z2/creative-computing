@@ -29,11 +29,11 @@ const init = () => {
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "rgba(0, 0, 0, 0)"
+    ctx.fillStyle = "rgba(255, 255, 255, 1)"
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
 
-    fish.update(canvas, mousePosition.x, mousePosition.y)
-    fish.drawRig(ctx)
+    fish.move(canvas, mousePosition.x, mousePosition.y)
+    //fish.drawRig(ctx)
   }
   animate()
 }

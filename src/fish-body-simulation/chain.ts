@@ -37,19 +37,8 @@ export class Chain {
     })
   }
 
-  update(
-    ctx: CanvasRenderingContext2D,
-    mouseX: number,
-    mouseY: number,
-    width: number,
-    height: number
-  ) {
-    const acceleration = this.circles[0].followMouse(
-      mouseX,
-      mouseY,
-      width,
-      height
-    )
+  freeMove(x: number, y: number, width: number, height: number) {
+    const acceleration = this.circles[0].followMouse(x, y, width, height)
     this.frameCount += 15 * Math.log(0.3 * acceleration + 1)
 
     const oscillateScale = (Math.PI / 4) * Math.log(2 * acceleration + 1)
@@ -72,7 +61,24 @@ export class Chain {
     }
   }
 
-  drawSkin(ctx: CanvasRenderingContext2D) {
+  constrainMove(x: number, y: number, radian: number) {
+    this.circles[0].teleport(x, y)
+    const displaceX = this.gap * Math.cos(radian)
+    const displaceY = this.gap * Math.sin(radian)
+    this.circles[1].teleport(x + displaceX, y + displaceY)
+
+    for (let i = 2; i < this.circles.length; i++) {
+      this.circles[i].followBody(
+        this.circles[i - 1],
+        // only detect contrain starting from the 3rd circle
+        this.circles[i - 2] || undefined,
+        this.gap,
+        this.smallestAngle
+      )
+    }
+  }
+
+  drawOutline(ctx: CanvasRenderingContext2D) {
     const points: Point[] = []
     // connect the left side of chain
     for (let i = 0; i < this.circles.length; i++) {
@@ -160,6 +166,7 @@ export class Chain {
     }
     ctx.closePath()
     ctx.stroke()
+    ctx.fill()
   }
 
   drawRig(ctx: CanvasRenderingContext2D) {

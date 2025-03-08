@@ -55,6 +55,11 @@ export class Circle {
     }
   }
 
+  teleport(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+
   applyPullingForce(target: Circle, gap: number, oscillateRadian?: number) {
     let radian = findTangent(target, this)
     if (oscillateRadian) radian += oscillateRadian
@@ -88,5 +93,9 @@ export class Circle {
       this.x = center.x + gap * Math.cos(radian)
       this.y = center.y + gap * Math.sin(radian)
     }
+  }
+
+  getPostion() {
+    return { x: this.x, y: this.y }
   }
 }
