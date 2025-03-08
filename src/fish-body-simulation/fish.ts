@@ -9,14 +9,22 @@ const finPoints = [0.426, 0.517, 0.376, 0.224, 0.115, 0.05]
 
 export class Fish {
   body: Chain
-  fin: Chain
+  fins: { fin: Chain; radian: number; position: number }[]
   constructor(x: number, y: number, length: number, width: number) {
     const gap = length / bodyPoints.length
     const smallestAngle = 160
     const sizes = bodyPoints.map((d) => d * width)
-    const finSizes = finPoints.map((d) => d * width)
     this.body = new Chain(x, y, gap, smallestAngle, sizes)
-    this.fin = new Chain(x, y, gap * 0.5, 160, finSizes)
+
+    const finPositions = [3, 3, 8, 8]
+    const finRadian = Math.PI / 2.3
+    this.fins = finPositions.map((position, index) => {
+      const finFactor = bodyPoints[position]
+      const finSizes = finPoints.map((d) => d * width * finFactor)
+      const newFin = new Chain(x, y, gap * 0.5, 160, finSizes)
+      const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
+      return { fin: newFin, position: position, radian: radian }
+    })
   }
 
   move(canvas: HTMLCanvasElement, x: number, y: number) {
@@ -27,16 +35,17 @@ export class Fish {
 
     this.body.freeMove(x, y, width, height)
 
-    const finStartPoint = this.body.circles[3].getPostion()
-    const nextBodyPoint = this.body.circles[4].getPostion()
-    const finRadian = findTangent(finStartPoint, nextBodyPoint) + Math.PI / 2.3
-    this.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian)
-
-    this.fin.drawOutline(ctx)
+    this.fins.forEach((fin) => {
+      const finStartPoint = this.body.circles[fin.position].getPostion()
+      const nextBodyPoint = this.body.circles[fin.position + 1].getPostion()
+      const finRadian = findTangent(finStartPoint, nextBodyPoint) + fin.radian
+      fin.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian)
+      fin.fin.drawOutline(ctx)
+    })
     this.body.drawOutline(ctx)
   }
   drawRig(ctx: CanvasRenderingContext2D) {
     this.body.drawRig(ctx)
-    this.fin.drawRig(ctx)
+    this.fins.forEach((fin) => fin.fin.drawRig(ctx))
   }
 }

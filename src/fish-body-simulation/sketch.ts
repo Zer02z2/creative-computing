@@ -6,6 +6,7 @@ const init = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
+  let showRig = false
   const dpr = window.devicePixelRatio || 1
   canvas.width = window.innerWidth * dpr
   canvas.height = window.innerHeight * dpr
@@ -29,11 +30,11 @@ const init = () => {
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "rgba(255, 255, 255, 1)"
+    ctx.fillStyle = `rgba(255, 255, 255, ${showRig ? 0 : 1})`
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
 
     fish.move(canvas, mousePosition.x, mousePosition.y)
-    //fish.drawRig(ctx)
+    if (showRig) fish.drawRig(ctx)
   }
   animate()
 }
