@@ -6,7 +6,7 @@ const init = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  let showRig = false
+  let showRig = true
   const dpr = window.devicePixelRatio || 1
   canvas.width = window.innerWidth * dpr
   canvas.height = window.innerHeight * dpr
