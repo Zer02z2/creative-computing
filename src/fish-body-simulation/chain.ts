@@ -1,6 +1,13 @@
 import { map } from "../myLibrary"
 import { Circle } from "./circle"
-import { findAngleBetween, findTangent, isOnLeft, Point } from "./functions"
+import {
+  drawCircle,
+  findAngleBetween,
+  findTangent,
+  isOnLeft,
+  line,
+  Point,
+} from "./functions"
 
 export class Chain {
   circles: Circle[]
@@ -38,7 +45,6 @@ export class Chain {
     height: number
   ) {
     const acceleration = this.circles[0].followMouse(
-      ctx,
       mouseX,
       mouseY,
       width,
@@ -56,7 +62,6 @@ export class Chain {
         map(i, 0, this.circles.length, 0.5, 2)
 
       this.circles[i].followBody(
-        ctx,
         this.circles[i - 1],
         // only detect contrain starting from the 3rd circle
         this.circles[i - 2] || undefined,
@@ -155,6 +160,16 @@ export class Chain {
     }
     ctx.closePath()
     ctx.stroke()
+  }
+
+  drawRig(ctx: CanvasRenderingContext2D) {
+    this.circles.forEach((circle, index) => {
+      drawCircle(ctx, circle.x, circle.y, circle.d)
+      if (index < this.circles.length - 1) {
+        const nextCircle = this.circles[index + 1]
+        line(ctx, circle.x, circle.y, nextCircle.x, nextCircle.y)
+      }
+    })
   }
 }
 

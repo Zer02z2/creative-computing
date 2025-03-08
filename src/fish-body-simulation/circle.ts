@@ -1,12 +1,10 @@
 import { map } from "../myLibrary"
 import {
-  circle,
   dist,
   findAngleBetween,
   findTangent,
   isOnLeft,
   lerp,
-  line,
   Point,
 } from "./functions"
 
@@ -21,13 +19,7 @@ export class Circle {
     this.d = d
   }
 
-  followMouse(
-    ctx: CanvasRenderingContext2D,
-    mouseX: number,
-    mouseY: number,
-    width: number,
-    height: number
-  ) {
+  followMouse(mouseX: number, mouseY: number, width: number, height: number) {
     const x = lerp(this.x, mouseX, 0.1)
     const y = lerp(this.y, mouseY, 0.1)
     const radian =
@@ -47,13 +39,10 @@ export class Circle {
     this.y = y + displaceY
 
     const acc = Math.sqrt(displaceX ** 2 + displaceY ** 2)
-
-    //circle(ctx, this.x, this.y, this.d)
     return acc
   }
 
   followBody(
-    ctx: CanvasRenderingContext2D,
     target: Circle,
     targetOfTarget: Circle | undefined,
     gap: number,
@@ -64,9 +53,6 @@ export class Circle {
     if (targetOfTarget) {
       this.applyAngleConstrain(target, targetOfTarget, gap, smallestAngle)
     }
-
-    // circle(ctx, this.x, this.y, this.d)
-    // line(ctx, this.x, this.y, target.x, target.y)
   }
 
   applyPullingForce(target: Circle, gap: number, oscillateRadian?: number) {

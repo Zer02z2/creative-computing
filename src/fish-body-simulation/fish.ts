@@ -23,4 +23,7 @@ export class Fish {
     this.body.update(ctx, x, y, width, height)
     this.body.drawSkin(ctx)
   }
+  drawRig(ctx: CanvasRenderingContext2D) {
+    this.body.drawRig(ctx)
+  }
 }
