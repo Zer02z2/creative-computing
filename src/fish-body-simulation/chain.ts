@@ -61,7 +61,12 @@ export class Chain {
     }
   }
 
-  constrainMove(x: number, y: number, idealRadian: number) {
+  constrainMove(
+    x: number,
+    y: number,
+    idealRadian: number,
+    constrainStrength: number = 0.7
+  ) {
     this.circles[0].teleport(x, y)
     const idealDisplaceX = this.gap * Math.cos(idealRadian)
     const idealDisplaceY = this.gap * Math.sin(idealRadian)
@@ -82,7 +87,7 @@ export class Chain {
         ? -1
         : 1) *
         deltaRadian *
-        0.7
+        constrainStrength
     const displaceX = this.gap * Math.cos(radian)
     const displaceY = this.gap * Math.sin(radian)
     this.circles[1].teleport(x + displaceX, y + displaceY)

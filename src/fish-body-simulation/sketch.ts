@@ -16,7 +16,7 @@ const init = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
-  const fishSize = canvas.width * 0.015
+  const fishSize = canvas.width * 0.01
 
   const fish = new Fish(100, 100, fishSize * 7, fishSize)
   const mousePosition = { x: 0, y: 0 }
