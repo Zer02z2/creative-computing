@@ -79,3 +79,14 @@ export const line = (
   ctx.closePath()
   ctx.stroke()
 }
+
+export const rect = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+) => {
+  ctx.rect(x, y, w, h)
+  ctx.stroke()
+}

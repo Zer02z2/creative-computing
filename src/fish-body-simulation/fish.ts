@@ -20,9 +20,9 @@ export class Fish {
     this.body = new Chain(x, y, this.gap, smallestAngle, sizes)
 
     const finPositions = [3, 3, 8, 8]
-    const finRadian = Math.PI / 2.2
+    const finRadian = Math.PI / 1.8
     this.fins = finPositions.map((position, index) => {
-      const finFactor = bodyPoints[position]
+      const finFactor = bodyPoints[position] * 0.8
       const finSizes = finPoints.map((d) => d * width * finFactor)
       const newFin = new Chain(x, y, this.gap * 0.5, 160, finSizes)
       const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
@@ -72,6 +72,7 @@ export class Fish {
   drawRig(ctx: CanvasRenderingContext2D) {
     this.body.drawRig(ctx)
     this.fins.forEach((fin) => fin.fin.drawRig(ctx))
+    this.tails.forEach((tail) => tail.tail.drawRig(ctx))
   }
   drawEyes(ctx: CanvasRenderingContext2D) {
     const firstPoint = this.body.circles[0].getPostion()

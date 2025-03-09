@@ -1,3 +1,4 @@
+import { Square } from "./cube"
 import { Fish } from "./fish"
 
 const init = () => {
@@ -16,10 +17,12 @@ const init = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
-  const fishSize = canvas.width * 0.01
+  const fishSize = canvas.width * 0.015
 
   const fish = new Fish(100, 100, fishSize * 7, fishSize)
   const mousePosition = { x: 0, y: 0 }
+
+  const square = new Square(200, 200)
 
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
@@ -32,10 +35,16 @@ const init = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = `rgba(255, 255, 255, ${showRig ? 0 : 1})`
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
-    ctx.lineWidth = 2
+    ctx.lineWidth = 1
 
-    fish.move(canvas, mousePosition.x, mousePosition.y)
-    if (showRig) fish.drawRig(ctx)
+    square.update(canvas.width, canvas.height)
+    const { x, y } = square.getPosition()
+    fish.move(canvas, x, y)
+
+    if (showRig) {
+      fish.drawRig(ctx)
+      square.drawRig(ctx)
+    }
   }
   animate()
 }

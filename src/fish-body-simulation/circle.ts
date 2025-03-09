@@ -92,6 +92,19 @@ export class Circle {
       }
       this.x = center.x + gap * Math.cos(radian)
       this.y = center.y + gap * Math.sin(radian)
+    } // if not straight, try to get straight
+    if (radianDelta !== Math.PI) {
+      const idealRadian = findTangent(theOtherPoint, center) + Math.PI
+      const currentRadian = findTangent(center, this)
+      const radianDifference = Math.abs(idealRadian - currentRadian)
+      let radian
+      if (isOnLeft(center, theOtherPoint, this)) {
+        radian = currentRadian + radianDifference * 0.001
+      } else {
+        radian = currentRadian - radianDifference * 0.001
+      }
+      this.x = center.x + gap * Math.cos(radian)
+      this.y = center.y + gap * Math.sin(radian)
     }
   }
 
