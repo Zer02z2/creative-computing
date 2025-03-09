@@ -17,7 +17,7 @@ export class Fish {
     this.body = new Chain(x, y, gap, smallestAngle, sizes)
 
     const finPositions = [3, 3, 8, 8]
-    const finRadian = Math.PI / 2.3
+    const finRadian = Math.PI / 2.2
     this.fins = finPositions.map((position, index) => {
       const finFactor = bodyPoints[position]
       const finSizes = finPoints.map((d) => d * width * finFactor)

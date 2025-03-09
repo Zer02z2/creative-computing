@@ -61,8 +61,28 @@ export class Chain {
     }
   }
 
-  constrainMove(x: number, y: number, radian: number) {
+  constrainMove(x: number, y: number, idealRadian: number) {
     this.circles[0].teleport(x, y)
+    const idealDisplaceX = this.gap * Math.cos(idealRadian)
+    const idealDisplaceY = this.gap * Math.sin(idealRadian)
+    const idealPosition = { x: x + idealDisplaceX, y: y + idealDisplaceY }
+
+    const deltaRadian = findAngleBetween(
+      { x: x, y: y },
+      this.circles[1].getPostion(),
+      idealPosition
+    )
+    const currentRadian = findTangent(
+      { x: x, y: y },
+      this.circles[1].getPostion()
+    )
+    const radian =
+      currentRadian +
+      (isOnLeft({ x: x, y: y }, idealPosition, this.circles[1].getPostion())
+        ? -1
+        : 1) *
+        deltaRadian *
+        0.7
     const displaceX = this.gap * Math.cos(radian)
     const displaceY = this.gap * Math.sin(radian)
     this.circles[1].teleport(x + displaceX, y + displaceY)

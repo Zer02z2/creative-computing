@@ -4,6 +4,7 @@ export interface Point {
 }
 
 export const findAngleBetween = (
+  // pointA is center
   pointA: Point,
   pointB: Point,
   pointC: Point
@@ -15,7 +16,7 @@ export const findAngleBetween = (
     Math.sqrt(vector1[0] ** 2 + vector1[1] ** 2) *
     Math.sqrt(vector2[0] ** 2 + vector2[1] ** 2)
   let radianDelta = Math.acos(vectorProduct / vectorLengthProduct)
-  return radianDelta
+  return radianDelta || 0
 }
 
 export const findTangent = (pointA: Point, pointB: Point) => {
@@ -25,6 +26,7 @@ export const findTangent = (pointA: Point, pointB: Point) => {
   return radian
 }
 export const isOnLeft = (pointA: Point, pointB: Point, pointC: Point) => {
+  // if C is left of A
   return (
     (pointB.x - pointA.x) * (pointC.y - pointA.y) -
       (pointB.y - pointA.y) * (pointC.x - pointA.x) >
