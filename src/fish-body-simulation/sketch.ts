@@ -1,4 +1,4 @@
-import { Square } from "./cube"
+import { Cube } from "./cube"
 import { Fish } from "./fish"
 
 const init = () => {
@@ -8,9 +8,8 @@ const init = () => {
   if (!ctx) return
 
   let showRig = false
-  const dpr = window.devicePixelRatio || 1
-  canvas.width = window.innerWidth * dpr
-  canvas.height = window.innerHeight * dpr
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
 
   canvas.style.zIndex = "998"
   canvas.style.position = "fixed"
@@ -22,7 +21,7 @@ const init = () => {
   const fish = new Fish(100, 100, fishSize * 7, fishSize)
   const mousePosition = { x: 0, y: 0 }
 
-  const square = new Square(200, 200)
+  const cube = new Cube(200, 200, fishSize * 0.2)
 
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
@@ -37,13 +36,13 @@ const init = () => {
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
     ctx.lineWidth = 1
 
-    square.update(canvas.width, canvas.height)
-    const { x, y } = square.getPosition()
+    cube.update(canvas.width, canvas.height)
+    const { x, y } = cube.getPosition()
     fish.move(canvas, x, y)
 
     if (showRig) {
       fish.drawRig(ctx)
-      square.drawRig(ctx)
+      cube.drawRig(ctx)
     }
   }
   animate()

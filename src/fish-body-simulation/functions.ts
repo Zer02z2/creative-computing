@@ -90,3 +90,7 @@ export const rect = (
   ctx.rect(x, y, w, h)
   ctx.stroke()
 }
+
+export const random = (min: number, max: number) => {
+  return min + Math.random() * (max - min)
+}
