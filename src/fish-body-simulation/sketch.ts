@@ -1,5 +1,6 @@
 import { Cube } from "./cube"
 import { Fish } from "./fish"
+import { random, getRandom } from "./functions"
 
 const init = () => {
   const canvas = document.getElementById("fish-canvas") as HTMLCanvasElement
@@ -7,7 +8,7 @@ const init = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  let showRig = false
+  let showRig = true
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
@@ -16,12 +17,18 @@ const init = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
-  const fishSize = canvas.width * 0.015
-
-  const fish = new Fish(100, 100, fishSize * 7, fishSize)
+  const fishes = Array.from({ length: 3 }).map(() => {
+    const fishSize = canvas.width * 0.015
+    const x = random(0, canvas.width)
+    const y = random(0, canvas.height)
+    return new Fish(
+      getRandom([-1, 1]) * 2 * x,
+      getRandom([-1, 1]) * 2 * y,
+      fishSize * 7,
+      fishSize
+    )
+  })
   const mousePosition = { x: 0, y: 0 }
-
-  const cube = new Cube(200, 200, fishSize * 0.2)
 
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
@@ -36,13 +43,14 @@ const init = () => {
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
     ctx.lineWidth = 1
 
-    cube.update(canvas.width, canvas.height)
-    const { x, y } = cube.getPosition()
-    fish.move(canvas, x, y)
+    fishes.forEach((fish) => {
+      fish.move(canvas)
+    })
 
     if (showRig) {
-      fish.drawRig(ctx)
-      cube.drawRig(ctx)
+      fishes.forEach((fish) => {
+        fish.drawRig(ctx)
+      })
     }
   }
   animate()

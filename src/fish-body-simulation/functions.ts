@@ -94,3 +94,8 @@ export const rect = (
 export const random = (min: number, max: number) => {
   return min + Math.random() * (max - min)
 }
+
+export const getRandom = (arr: number[]) => {
+  const index = Math.floor(random(0, arr.length))
+  return arr[index]
+}

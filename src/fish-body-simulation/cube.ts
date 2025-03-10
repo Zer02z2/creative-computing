@@ -19,28 +19,30 @@ export class Cube {
     this.y = y
     this.vMax = vMax
     this.vMin = vMax * 0
-    this.vDash = vMax * 20
-    this.vX = this.vMin
-    this.vY = this.vMin
+    this.vDash = vMax * 10
+    this.vX = random(0, this.vMax)
+    this.vY = random(0, this.vMax)
     this.w = window.innerWidth * 0.01
     this.h = this.w
     this.directionX = Math.random() < 0.5 ? 1 : -1
     this.directionY = Math.random() < 0.5 ? 1 : -1
-    this.pBoost = 0.005
+    this.pBoost = 0.002
     this.pDirectionChange = 0.001
   }
   update(xBound: number, yBound: number) {
-    if (Math.random() < this.pBoost) {
+    if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.001) {
       this.vX = this.boostVelocity()
+      this.vY = random(0, this.vX)
       this.directionX *= Math.random() < 0.2 ? -1 : 1
     }
-    if (Math.random() < this.pBoost) {
+    if (Math.random() < this.pBoost || this.vY - this.vMin <= 0.001) {
       this.vY = this.boostVelocity()
+      this.vX = random(0, this.vY)
       this.directionY *= Math.random() < 0.2 ? -1 : 1
     }
 
-    if (this.vX > this.vMin) this.vX -= (this.vX - this.vMin) * 0.005
-    if (this.vY > this.vMin) this.vY -= (this.vY - this.vMin) * 0.005
+    if (this.vX > this.vMin) this.vX -= (this.vX - this.vMin) * 0.01
+    if (this.vY > this.vMin) this.vY -= (this.vY - this.vMin) * 0.01
 
     if (Math.random() < this.pDirectionChange) this.directionX *= -1
     if (Math.random() < this.pDirectionChange) this.directionY *= -1

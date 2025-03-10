@@ -1,4 +1,5 @@
 import { Chain } from "./chain"
+import { Cube } from "./cube"
 import { drawCircle, findTangent } from "./functions"
 
 const bodyPoints = [
@@ -13,6 +14,10 @@ export class Fish {
   body: Chain
   fins: { fin: Chain; radian: number; position: number }[]
   tails: { tail: Chain; radian: number; position: number }[]
+  bounds: { left: number; right: number; top: number; bottom: number }
+  clickBox: HTMLAnchorElement
+  cube: Cube
+
   constructor(x: number, y: number, length: number, width: number) {
     this.gap = length / bodyPoints.length
     const smallestAngle = 160
@@ -36,13 +41,30 @@ export class Fish {
       const radian = tailRadian * (index % 2 == 0 ? 1 : -1)
       return { tail: newTail, radian: radian, position: position }
     })
+    ;(this.cube = new Cube(x, y, width * 0.3)),
+      (this.bounds = { left: x, right: x, top: y, bottom: y })
+    const clickBox = document.createElement("a")
+    clickBox.className = "fish-click-box"
+    clickBox.style.position = "fixed"
+    clickBox.style.zIndex = "900"
+    clickBox.style.width = "0px"
+    clickBox.style.height = "0px"
+    clickBox.style.left = "0px"
+    clickBox.style.right = "0px"
+    clickBox.style.border = "1px solid red"
+    clickBox.style.opacity = "0"
+    document.body.appendChild(clickBox)
+    this.clickBox = clickBox
   }
 
-  move(canvas: HTMLCanvasElement, x: number, y: number) {
+  move(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
     const width = canvas.width
     const height = canvas.height
+
+    this.cube.update(width, height)
+    const { x, y } = this.cube.getPosition()
 
     this.body.freeMove(x, y, width, height)
 
@@ -68,12 +90,17 @@ export class Fish {
     })
     this.body.drawOutline(ctx)
     this.drawEyes(ctx)
+    this.updateBounds()
   }
+
   drawRig(ctx: CanvasRenderingContext2D) {
     this.body.drawRig(ctx)
     this.fins.forEach((fin) => fin.fin.drawRig(ctx))
     this.tails.forEach((tail) => tail.tail.drawRig(ctx))
+    this.cube.drawRig(ctx)
+    this.clickBox.style.opacity = "1"
   }
+
   drawEyes(ctx: CanvasRenderingContext2D) {
     const firstPoint = this.body.circles[0].getPostion()
     const secondPoint = this.body.circles[1].getPostion()
@@ -94,5 +121,27 @@ export class Fish {
     drawEye(leftRadian)
     drawEye(rightRadian)
     ctx.restore()
+  }
+
+  updateBounds() {
+    this.bounds = {
+      left:
+        Math.min(...this.body.circles.map((circle) => circle.getPostion().x)) -
+        this.gap,
+      right:
+        Math.max(...this.body.circles.map((circle) => circle.getPostion().x)) +
+        this.gap,
+      top:
+        Math.min(...this.body.circles.map((circle) => circle.getPostion().y)) -
+        this.gap,
+      bottom:
+        Math.max(...this.body.circles.map((circle) => circle.getPostion().y)) +
+        this.gap,
+    }
+    this.clickBox.style.left = `${this.bounds.left}px`
+    this.clickBox.style.top = `${this.bounds.top}px`
+    this.clickBox.style.width = `${this.bounds.right - this.bounds.left}px`
+    this.clickBox.style.height = `${this.bounds.bottom - this.bounds.top}px`
+    this.clickBox.style.opacity = "0"
   }
 }
