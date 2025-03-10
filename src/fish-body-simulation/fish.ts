@@ -174,7 +174,7 @@ export class Fish {
     const y = centerCircle.y
     const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
     const intensity = map(velocity, this.cube.vMax, this.cube.vDash, 0, 255)
-    const ripple = new Ripple(x, y, intensity)
+    const ripple = new Ripple(x, y, intensity, 0)
     this.rippleCooldown = generateRandomCooldown()
     return ripple
   }

@@ -20,7 +20,7 @@ const init = () => {
   const backgroundColor = "rgb(10, 10, 10)"
   const fishColor = "rgb(10, 10, 10)"
   const fishOutlineColor = "rgb(255, 255, 255)"
-  const fishRigColor = "rgb(45, 118, 255)"
+  const fishRigColor = "rgb(20, 130, 255)"
   const boxRigColor = "rgb(80, 255, 118)"
 
   const fishes = Array.from({ length: 3 }).map(() => {
@@ -109,6 +109,11 @@ const init = () => {
         if (ripple.isEmpty()) ripples.splice(i, 1)
       }
     }
+    ripples.forEach((ripple) => {
+      const reflectRipples = ripple.detectBouncing(canvas)
+      if (!reflectRipples) return
+      ripples.push(...reflectRipples)
+    })
   }
   animate()
 }
