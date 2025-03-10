@@ -6,7 +6,7 @@ const bodyPoints = [
   0.426, 0.851, 0.957, 1.0, 0.979, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
   0.532, 0.426, 0.319,
 ]
-const finPoints = [0.426, 0.517, 0.376, 0.224, 0.115, 0.05]
+const finPoints = [0.526, 0.617, 0.434, 0.376, 0.224, 0.115, 0.05]
 const tailPoints = [0.326, 0.401, 0.328, 0.341, 0.283, 0.216, 0.155, 0.09]
 
 export class Fish {
@@ -77,7 +77,6 @@ export class Fish {
       const nextBodyPoint = this.body.circles[fin.position + 1].getPostion()
       const finRadian = findTangent(finStartPoint, nextBodyPoint) + fin.radian
       fin.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian)
-      fin.fin.drawOutline(ctx)
     })
     this.tails.forEach((tail) => {
       const tailStartPoint = this.body.circles[tail.position].getPostion()
@@ -90,18 +89,22 @@ export class Fish {
         tailRadian,
         0.3
       )
-      tail.tail.drawOutline(ctx)
     })
-    this.body.drawOutline(ctx)
-    this.drawEyes(ctx)
     this.updateBounds()
   }
 
-  drawRig(ctx: CanvasRenderingContext2D) {
+  drawBody(ctx: CanvasRenderingContext2D) {
+    this.fins.forEach((fin) => fin.fin.drawOutline(ctx))
+    this.tails.forEach((tail) => tail.tail.drawOutline(ctx))
+    this.body.drawOutline(ctx)
+  }
+
+  drawRig(ctx: CanvasRenderingContext2D, color: string) {
     this.body.drawRig(ctx)
     this.fins.forEach((fin) => fin.fin.drawRig(ctx))
     this.tails.forEach((tail) => tail.tail.drawRig(ctx))
     this.cube.drawRig(ctx)
+    this.clickBox.style.borderColor = color
     this.clickBox.style.opacity = "1"
   }
 
@@ -113,18 +116,15 @@ export class Fish {
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
       const eyeDistance = 1
-      const eyeSize = 0.15
+      const eyeSize = 0.5
       const displaceX = this.gap * eyeDistance * Math.cos(eyeRadian)
       const displaceY = this.gap * eyeDistance * Math.sin(eyeRadian)
       const x = this.body.circles[0].getPostion().x + displaceX
       const y = this.body.circles[0].getPostion().y + displaceY
       drawCircle(ctx, x, y, this.gap * eyeSize)
     }
-    ctx.save()
-    ctx.fillStyle = "rgba(0, 0, 0, 1)"
     drawEye(leftRadian)
     drawEye(rightRadian)
-    ctx.restore()
   }
 
   updateBounds() {

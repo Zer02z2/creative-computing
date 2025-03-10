@@ -41,8 +41,10 @@ export class Cube {
       this.directionY *= Math.random() < 0.2 ? -1 : 1
     }
 
-    if (this.vX > this.vMin) this.vX -= (this.vX - this.vMin) * 0.01
-    if (this.vY > this.vMin) this.vY -= (this.vY - this.vMin) * 0.01
+    if (this.vX > this.vMin)
+      this.vX -= (this.vX - this.vMin) * random(0.01, 0.02)
+    if (this.vY > this.vMin)
+      this.vY -= (this.vY - this.vMin) * random(0.01, 0.02)
 
     if (Math.random() < this.pDirectionChange) this.directionX *= -1
     if (Math.random() < this.pDirectionChange) this.directionY *= -1

@@ -1,6 +1,6 @@
-import { Cube } from "./cube"
 import { Fish } from "./fish"
 import { random, getRandom, Point } from "./functions"
+import { Ripple } from "./ripple"
 
 const init = () => {
   const canvas = document.getElementById("fish-canvas") as HTMLCanvasElement
@@ -8,7 +8,7 @@ const init = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  let showRig = false
+  let showRig = true
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
@@ -17,31 +17,41 @@ const init = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
+  const backgroundColor = "rgb(24, 24, 24)"
+  const fishColor = "rgb(180, 180, 180)"
+  const fishRigColor = "rgb(0, 102, 255)"
+  const boxRigColor = "rgb(80, 255, 118)"
+
   const fishes = Array.from({ length: 3 }).map(() => {
-    const fishSize = canvas.width * 0.015
+    const fishSize = canvas.width * 0.015 * random(0.8, 1.2)
     const x = random(0, canvas.width)
     const y = random(0, canvas.height)
     return new Fish(
-      getRandom([-1, 1]) * 2 * x,
-      getRandom([-1, 1]) * 2 * y,
+      getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
+      getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
       fishSize * 7,
       fishSize
     )
   })
+
+  const ripple = new Ripple(fishColor)
   const mousePosition = { x: 0, y: 0 }
 
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
     mousePosition.y = event.clientY
   })
+  document.addEventListener("mousedown", (event) => {
+    const x = Math.floor(event.clientX / ripple.getResolution())
+    const y = Math.floor(event.clientY / ripple.getResolution())
+    ripple.startRipple(x, y)
+  })
 
   const animate = () => {
     requestAnimationFrame(animate)
 
+    ripple.update()
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = `rgba(255, 255, 255, ${showRig ? 0 : 1})`
-    ctx.strokeStyle = "rgba(0, 0, 0, 1)"
-    ctx.lineWidth = 1
 
     // animate fish
     fishes.forEach((fish) => {
@@ -61,10 +71,27 @@ const init = () => {
         }
       })
     })
+    ctx.fillStyle = backgroundColor
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // render fish
+    fishes.forEach((fish) => {
+      ctx.fillStyle = fishColor
+      ctx.strokeStyle = backgroundColor
+      ctx.lineWidth = 2
+      fish.drawBody(ctx)
+
+      ctx.fillStyle = backgroundColor
+      ctx.strokeStyle = fishColor
+      fish.drawEyes(ctx)
+    })
 
     if (showRig) {
+      ctx.fillStyle = fishColor
+      ctx.strokeStyle = fishRigColor
+      ctx.lineWidth = 1
       fishes.forEach((fish) => {
-        fish.drawRig(ctx)
+        fish.drawRig(ctx, boxRigColor)
       })
     }
   }
