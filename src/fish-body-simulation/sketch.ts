@@ -17,9 +17,10 @@ const init = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
-  const backgroundColor = "rgb(24, 24, 24)"
-  const fishColor = "rgb(180, 180, 180)"
-  const fishRigColor = "rgb(0, 102, 255)"
+  const backgroundColor = "rgb(10, 10, 10)"
+  const fishColor = "rgb(10, 10, 10)"
+  const fishOutlineColor = "rgb(255, 255, 255)"
+  const fishRigColor = "rgb(45, 118, 255)"
   const boxRigColor = "rgb(80, 255, 118)"
 
   const fishes = Array.from({ length: 3 }).map(() => {
@@ -29,28 +30,26 @@ const init = () => {
     return new Fish(
       getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
       getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
-      fishSize * 7,
-      fishSize
+      fishSize * random(6, 8),
+      fishSize * random(0.9, 1.2)
     )
   })
+  const ripples: Ripple[] = []
 
-  const ripple = new Ripple(fishColor)
   const mousePosition = { x: 0, y: 0 }
 
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
     mousePosition.y = event.clientY
   })
-  document.addEventListener("mousedown", (event) => {
-    const x = Math.floor(event.clientX / ripple.getResolution())
-    const y = Math.floor(event.clientY / ripple.getResolution())
-    ripple.startRipple(x, y)
-  })
+  // document.addEventListener("mousedown", (event) => {
+  //   const ripple = new Ripple(event.clientX, event.clientY, 255)
+  //   ripples.push(ripple)
+  // })
 
   const animate = () => {
     requestAnimationFrame(animate)
 
-    ripple.update()
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // animate fish
@@ -70,6 +69,12 @@ const init = () => {
           )
         }
       })
+      const currentTime = new Date().getTime()
+      if (currentTime - fish.lastRippleTime > fish.rippleCooldown) {
+        const ripple = fish.createRipple()
+        ripples.push(ripple)
+        fish.lastRippleTime = currentTime
+      }
     })
     ctx.fillStyle = backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -77,13 +82,9 @@ const init = () => {
     // render fish
     fishes.forEach((fish) => {
       ctx.fillStyle = fishColor
-      ctx.strokeStyle = backgroundColor
+      ctx.strokeStyle = fishOutlineColor
       ctx.lineWidth = 2
       fish.drawBody(ctx)
-
-      ctx.fillStyle = backgroundColor
-      ctx.strokeStyle = fishColor
-      fish.drawEyes(ctx)
     })
 
     if (showRig) {
@@ -93,6 +94,20 @@ const init = () => {
       fishes.forEach((fish) => {
         fish.drawRig(ctx, boxRigColor)
       })
+    }
+
+    fishes.forEach((fish) => {
+      ctx.fillStyle = fishOutlineColor
+      ctx.strokeStyle = fishColor
+      fish.drawEyes(ctx)
+    })
+
+    if (ripples.length > 0) {
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const ripple = ripples[i]
+        ripple.update(ctx)
+        if (ripple.isEmpty()) ripples.splice(i, 1)
+      }
     }
   }
   animate()

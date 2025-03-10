@@ -196,6 +196,7 @@ export class Chain {
 
   drawRig(ctx: CanvasRenderingContext2D) {
     this.circles.forEach((circle, index) => {
+      if (index === 0 || index === this.circles.length - 1) return
       drawCircle(ctx, circle.x, circle.y, circle.d)
       if (index < this.circles.length - 1) {
         const nextCircle = this.circles[index + 1]

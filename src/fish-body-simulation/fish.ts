@@ -1,6 +1,8 @@
+import { map } from "../myLibrary"
 import { Chain } from "./chain"
 import { Cube } from "./cube"
-import { drawCircle, findTangent } from "./functions"
+import { drawCircle, findTangent, random } from "./functions"
+import { Ripple } from "./ripple"
 
 const bodyPoints = [
   0.426, 0.851, 0.957, 1.0, 0.979, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
@@ -17,6 +19,8 @@ export class Fish {
   bounds: { left: number; right: number; top: number; bottom: number }
   clickBox: HTMLAnchorElement
   cube: Cube
+  rippleCooldown: number
+  lastRippleTime: number
 
   constructor(x: number, y: number, length: number, width: number) {
     this.gap = length / bodyPoints.length
@@ -59,6 +63,8 @@ export class Fish {
     })
     document.body.appendChild(clickBox)
     this.clickBox = clickBox
+    this.rippleCooldown = generateRandomCooldown()
+    this.lastRippleTime = new Date().getTime()
   }
 
   move(canvas: HTMLCanvasElement) {
@@ -101,11 +107,11 @@ export class Fish {
 
   drawRig(ctx: CanvasRenderingContext2D, color: string) {
     this.body.drawRig(ctx)
-    this.fins.forEach((fin) => fin.fin.drawRig(ctx))
-    this.tails.forEach((tail) => tail.tail.drawRig(ctx))
-    this.cube.drawRig(ctx)
-    this.clickBox.style.borderColor = color
-    this.clickBox.style.opacity = "1"
+    //this.fins.forEach((fin) => fin.fin.drawRig(ctx))
+    //this.tails.forEach((tail) => tail.tail.drawRig(ctx))
+    //this.cube.drawRig(ctx)
+    //this.clickBox.style.borderColor = color
+    //this.clickBox.style.opacity = "1"
   }
 
   drawEyes(ctx: CanvasRenderingContext2D) {
@@ -116,7 +122,7 @@ export class Fish {
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
       const eyeDistance = 1
-      const eyeSize = 0.5
+      const eyeSize = 0.3
       const displaceX = this.gap * eyeDistance * Math.cos(eyeRadian)
       const displaceY = this.gap * eyeDistance * Math.sin(eyeRadian)
       const x = this.body.circles[0].getPostion().x + displaceX
@@ -161,6 +167,17 @@ export class Fish {
     const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
     return velocity > this.cube.vMax
   }
+  createRipple() {
+    const centerCircle =
+      this.body.circles[Math.floor(this.body.circles.length / 2)]
+    const x = centerCircle.x
+    const y = centerCircle.y
+    const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
+    const intensity = map(velocity, this.cube.vMax, this.cube.vDash, 0, 255)
+    const ripple = new Ripple(x, y, intensity)
+    this.rippleCooldown = generateRandomCooldown()
+    return ripple
+  }
   getBounds() {
     const x = this.bounds.left
     const y = this.bounds.top
@@ -176,4 +193,8 @@ export class Fish {
       centerPoint: { x: centerX, y: centerY },
     }
   }
+}
+
+const generateRandomCooldown = () => {
+  return random(200, 600)
 }
