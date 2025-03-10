@@ -1,6 +1,6 @@
 import { Cube } from "./cube"
 import { Fish } from "./fish"
-import { random, getRandom } from "./functions"
+import { random, getRandom, Point } from "./functions"
 
 const init = () => {
   const canvas = document.getElementById("fish-canvas") as HTMLCanvasElement
@@ -8,7 +8,7 @@ const init = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  let showRig = true
+  let showRig = false
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
@@ -43,8 +43,23 @@ const init = () => {
     ctx.strokeStyle = "rgba(0, 0, 0, 1)"
     ctx.lineWidth = 1
 
+    // animate fish
     fishes.forEach((fish) => {
       fish.move(canvas)
+    })
+    // detect if any fish dash into each other
+    fishes.forEach((fish, index) => {
+      const isDashing = fish.getIsDashing()
+      if (!isDashing) return
+      fishes.forEach((otherFish, otherIndex) => {
+        if (index === otherIndex) return
+        if (isOverlapping(fish.getBounds(), otherFish.getBounds())) {
+          otherFish.triggerDash(
+            fish.getBounds().centerPoint.x,
+            fish.getBounds().centerPoint.y
+          )
+        }
+      })
     })
 
     if (showRig) {
@@ -54,6 +69,25 @@ const init = () => {
     }
   }
   animate()
+}
+
+interface Rect {
+  x: number
+  y: number
+  width: number
+  height: number
+  centerPoint: Point
+}
+
+const isOverlapping = (rect1: Rect, rect2: Rect) => {
+  return !(
+    (
+      rect1.x + rect1.width <= rect2.x || // rect1 is completely left of rect2
+      rect2.x + rect2.width <= rect1.x || // rect2 is completely left of rect1
+      rect1.y + rect1.height <= rect2.y || // rect1 is completely above rect2
+      rect2.y + rect2.height <= rect1.y
+    ) // rect2 is completely above rect1
+  )
 }
 
 init()

@@ -23,6 +23,8 @@ export class Fish {
     const smallestAngle = 160
     const sizes = bodyPoints.map((d) => d * width)
     this.body = new Chain(x, y, this.gap, smallestAngle, sizes)
+    this.cube = new Cube(x, y, width * 0.3)
+    this.bounds = { left: x, right: x, top: y, bottom: y }
 
     const finPositions = [3, 3, 8, 8]
     const finRadian = Math.PI / 1.8
@@ -41,18 +43,20 @@ export class Fish {
       const radian = tailRadian * (index % 2 == 0 ? 1 : -1)
       return { tail: newTail, radian: radian, position: position }
     })
-    ;(this.cube = new Cube(x, y, width * 0.3)),
-      (this.bounds = { left: x, right: x, top: y, bottom: y })
+
     const clickBox = document.createElement("a")
     clickBox.className = "fish-click-box"
     clickBox.style.position = "fixed"
-    clickBox.style.zIndex = "900"
+    clickBox.style.zIndex = "2000"
     clickBox.style.width = "0px"
     clickBox.style.height = "0px"
     clickBox.style.left = "0px"
     clickBox.style.right = "0px"
     clickBox.style.border = "1px solid red"
     clickBox.style.opacity = "0"
+    clickBox.addEventListener("mousedown", (event) => {
+      this.triggerDash(event.clientX, event.clientY)
+    })
     document.body.appendChild(clickBox)
     this.clickBox = clickBox
   }
@@ -143,5 +147,33 @@ export class Fish {
     this.clickBox.style.width = `${this.bounds.right - this.bounds.left}px`
     this.clickBox.style.height = `${this.bounds.bottom - this.bounds.top}px`
     this.clickBox.style.opacity = "0"
+  }
+
+  triggerDash(x: number, y: number) {
+    const centerPoint = {
+      x: (this.bounds.right + this.bounds.left) / 2,
+      y: (this.bounds.bottom + this.bounds.top) / 2,
+    }
+    const radian = findTangent(centerPoint, { x: x, y: y })
+    this.cube.dash(radian + Math.PI)
+  }
+  getIsDashing() {
+    const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
+    return velocity > this.cube.vMax
+  }
+  getBounds() {
+    const x = this.bounds.left
+    const y = this.bounds.top
+    const width = this.bounds.right - this.bounds.left
+    const height = this.bounds.bottom - this.bounds.top
+    const centerX = x + width / 2
+    const centerY = y + height / 2
+    return {
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      centerPoint: { x: centerX, y: centerY },
+    }
   }
 }

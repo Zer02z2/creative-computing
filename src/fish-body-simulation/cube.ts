@@ -19,7 +19,7 @@ export class Cube {
     this.y = y
     this.vMax = vMax
     this.vMin = vMax * 0
-    this.vDash = vMax * 10
+    this.vDash = vMax * 3
     this.vX = random(0, this.vMax)
     this.vY = random(0, this.vMax)
     this.w = window.innerWidth * 0.01
@@ -70,12 +70,18 @@ export class Cube {
       this.directionY *= -1
     }
   }
-  dash() {}
+  dash(radian: number) {
+    const vX = this.vDash * Math.cos(radian)
+    const vY = this.vDash * Math.sin(radian)
+    this.vX = Math.abs(vX)
+    this.vY = Math.abs(vY)
+    this.directionX = vX >= 0 ? 1 : -1
+    this.directionY = vY >= 0 ? 1 : -1
+  }
   drawRig(ctx: CanvasRenderingContext2D) {
     rect(ctx, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
   }
   getPosition() {
     return { x: this.x, y: this.y }
   }
-  private calculateVY() {}
 }
