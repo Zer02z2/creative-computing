@@ -13,6 +13,7 @@ export default {
       input: {
         main: "/index.html",
         clock: "/clock/index.html",
+        fishSimulation: "/fish-body-simulation/index.html",
       },
     },
   },

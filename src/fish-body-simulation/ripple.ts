@@ -1,4 +1,4 @@
-import { map } from "../myLibrary"
+import { map2 } from "./functions"
 
 interface RippleData {
   initialIntensity: number
@@ -38,7 +38,7 @@ export class Ripple {
       },
     ]
     this.startMillis = new Date().getTime()
-    this.remainingRipples = Math.floor(map(intensity, 0, 255, 0, 3))
+    this.remainingRipples = Math.floor(map2(intensity, 0, 255, 0, 3))
   }
 
   update(ctx: CanvasRenderingContext2D) {
@@ -64,7 +64,7 @@ export class Ripple {
       ripple.currentIntensity -= this.speed
       ripple.currentRadius += this.speed * 5
 
-      const opacity = map(ripple.currentIntensity, 0, 255, 0, 1)
+      const opacity = map2(ripple.currentIntensity, 0, 255, 0, 1)
       ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
       ctx.beginPath()
       ctx.arc(this.x, this.y, ripple.currentRadius, 0, 2 * Math.PI)
@@ -85,7 +85,7 @@ export class Ripple {
       const currentBottom = this.y + ripple.currentRadius
       const { left, right, top, bottom } = ripple.edges
 
-      const reflectIntensity = ripple.currentIntensity * 0.2
+      const reflectIntensity = ripple.currentIntensity * 0.6
 
       if (left > 0 && currentLeft <= 0) {
         resultRipples.push(

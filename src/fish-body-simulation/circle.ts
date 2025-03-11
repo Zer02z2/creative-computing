@@ -1,10 +1,10 @@
-import { map } from "../myLibrary"
 import {
   dist,
   findAngleBetween,
   findTangent,
   isOnLeft,
   lerp,
+  map2,
   Point,
 } from "./functions"
 
@@ -25,7 +25,7 @@ export class Circle {
     const radian =
       findTangent({ x: this.x, y: this.y }, { x: x, y: y }) + 0.5 * Math.PI
 
-    const factor = map(
+    const factor = map2(
       dist(this.x, this.y, mouseX, mouseY),
       0,
       Math.sqrt(width ** 2 + height ** 2),

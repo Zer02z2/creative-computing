@@ -2,9 +2,10 @@ import { Fish } from "./fish"
 import { random, getRandom, Point } from "./functions"
 import { Ripple } from "./ripple"
 
-const init = () => {
-  const canvas = document.getElementById("fish-canvas") as HTMLCanvasElement
-  if (!canvas) return
+export const animateFish = () => {
+  const canvasDiv = document.getElementById("fish-canvas") as HTMLDivElement
+  const canvas = document.createElement("canvas")
+  canvasDiv.appendChild(canvas)
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
@@ -24,14 +25,18 @@ const init = () => {
   const boxRigColor = "rgb(80, 255, 118)"
 
   const fishes = Array.from({ length: 3 }).map(() => {
-    const fishSize = canvas.width * 0.015 * random(0.8, 1.2)
+    const fishSize =
+      Math.sqrt(canvas.width ** 2 + canvas.height ** 2) *
+      0.015 *
+      random(0.8, 1.2)
     const x = random(0, canvas.width)
     const y = random(0, canvas.height)
     return new Fish(
       getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
       getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
       fishSize * random(6, 8),
-      fishSize * random(0.9, 1.2)
+      fishSize * random(0.9, 1.2),
+      canvasDiv
     )
   })
   const ripples: Ripple[] = []
@@ -47,7 +52,16 @@ const init = () => {
   //   ripples.push(ripple)
   // })
 
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  })
+
   const animate = () => {
+    // if (!document.getElementById("fish-canvas")) {
+    //   fishes.forEach((fish) => fish.unmount())
+    //   return
+    // }
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -99,6 +113,7 @@ const init = () => {
     fishes.forEach((fish) => {
       ctx.fillStyle = fishOutlineColor
       ctx.strokeStyle = fishColor
+      ctx.lineWidth = 1
       fish.drawEyes(ctx)
     })
 
@@ -136,5 +151,3 @@ const isOverlapping = (rect1: Rect, rect2: Rect) => {
     ) // rect2 is completely above rect1
   )
 }
-
-init()

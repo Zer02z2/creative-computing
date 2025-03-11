@@ -99,3 +99,15 @@ export const getRandom = (arr: number[]) => {
   const index = Math.floor(random(0, arr.length))
   return arr[index]
 }
+
+export const map2 = (
+  target: number,
+  range1A: number,
+  range1B: number,
+  range2A: number,
+  range2B: number
+): number => {
+  const percentage = (target - range1A) / (range1B - range1A)
+  const value = range2A + (range2B - range2A) * percentage
+  return value
+}

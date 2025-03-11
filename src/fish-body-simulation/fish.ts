@@ -1,7 +1,6 @@
-import { map } from "../myLibrary"
 import { Chain } from "./chain"
 import { Cube } from "./cube"
-import { drawCircle, findTangent, random } from "./functions"
+import { drawCircle, findTangent, map2, random } from "./functions"
 import { Ripple } from "./ripple"
 
 const bodyPoints = [
@@ -22,7 +21,13 @@ export class Fish {
   rippleCooldown: number
   lastRippleTime: number
 
-  constructor(x: number, y: number, length: number, width: number) {
+  constructor(
+    x: number,
+    y: number,
+    length: number,
+    width: number,
+    canvasDiv: HTMLDivElement
+  ) {
     this.gap = length / bodyPoints.length
     const smallestAngle = 160
     const sizes = bodyPoints.map((d) => d * width)
@@ -35,7 +40,13 @@ export class Fish {
     this.fins = finPositions.map((position, index) => {
       const finFactor = bodyPoints[position] * 0.8
       const finSizes = finPoints.map((d) => d * width * finFactor)
-      const newFin = new Chain(x, y, this.gap * 0.5, 160, finSizes)
+      const newFin = new Chain(
+        x,
+        y,
+        this.gap * 0.5,
+        160 + 10 * (width / length),
+        finSizes
+      )
       const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
       return { fin: newFin, position: position, radian: radian }
     })
@@ -61,7 +72,7 @@ export class Fish {
     clickBox.addEventListener("mousedown", (event) => {
       this.triggerDash(event.clientX, event.clientY)
     })
-    document.body.appendChild(clickBox)
+    canvasDiv.appendChild(clickBox)
     this.clickBox = clickBox
     this.rippleCooldown = generateRandomCooldown()
     this.lastRippleTime = new Date().getTime()
@@ -107,6 +118,7 @@ export class Fish {
 
   drawRig(ctx: CanvasRenderingContext2D, color: string) {
     this.body.drawRig(ctx)
+    color
     //this.fins.forEach((fin) => fin.fin.drawRig(ctx))
     //this.tails.forEach((tail) => tail.tail.drawRig(ctx))
     //this.cube.drawRig(ctx)
@@ -122,7 +134,7 @@ export class Fish {
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
       const eyeDistance = 1
-      const eyeSize = 0.3
+      const eyeSize = 0.4
       const displaceX = this.gap * eyeDistance * Math.cos(eyeRadian)
       const displaceY = this.gap * eyeDistance * Math.sin(eyeRadian)
       const x = this.body.circles[0].getPostion().x + displaceX
@@ -173,7 +185,7 @@ export class Fish {
     const x = centerCircle.x
     const y = centerCircle.y
     const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
-    const intensity = map(velocity, this.cube.vMax, this.cube.vDash, 0, 255)
+    const intensity = map2(velocity, this.cube.vMax, this.cube.vDash, 0, 100)
     const ripple = new Ripple(x, y, intensity, 0)
     this.rippleCooldown = generateRandomCooldown()
     return ripple
@@ -192,6 +204,9 @@ export class Fish {
       height: height,
       centerPoint: { x: centerX, y: centerY },
     }
+  }
+  unmount() {
+    this.clickBox.parentElement?.removeChild(this.clickBox)
   }
 }
 

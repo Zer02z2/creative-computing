@@ -1,4 +1,3 @@
-import { map } from "../myLibrary"
 import { Circle } from "./circle"
 import {
   drawCircle,
@@ -6,6 +5,7 @@ import {
   findTangent,
   isOnLeft,
   line,
+  map2,
   Point,
 } from "./functions"
 
@@ -48,7 +48,7 @@ export class Chain {
       const oscillateRadian =
         Math.sin(this.frameCount + oscillateOffset) *
         oscillateScale *
-        map(i, 0, this.circles.length, 0.5, 2)
+        map2(i, 0, this.circles.length, 0.5, 2)
 
       this.circles[i].followBody(
         this.circles[i - 1],
