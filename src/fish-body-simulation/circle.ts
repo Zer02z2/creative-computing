@@ -108,7 +108,7 @@ export class Circle {
     }
   }
 
-  getPostion() {
+  getPosition() {
     return { x: this.x, y: this.y }
   }
 }

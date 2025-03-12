@@ -74,16 +74,16 @@ export class Chain {
 
     const deltaRadian = findAngleBetween(
       { x: x, y: y },
-      this.circles[1].getPostion(),
+      this.circles[1].getPosition(),
       idealPosition
     )
     const currentRadian = findTangent(
       { x: x, y: y },
-      this.circles[1].getPostion()
+      this.circles[1].getPosition()
     )
     const radian =
       currentRadian +
-      (isOnLeft({ x: x, y: y }, idealPosition, this.circles[1].getPostion())
+      (isOnLeft({ x: x, y: y }, idealPosition, this.circles[1].getPosition())
         ? -1
         : 1) *
         deltaRadian *
@@ -196,7 +196,7 @@ export class Chain {
 
   drawRig(ctx: CanvasRenderingContext2D) {
     this.circles.forEach((circle, index) => {
-      if (index === 0 || index === this.circles.length - 1) return
+      if (index <= 0 || index == this.circles.length - 1) return
       drawCircle(ctx, circle.x, circle.y, circle.d)
       if (index < this.circles.length - 1) {
         const nextCircle = this.circles[index + 1]

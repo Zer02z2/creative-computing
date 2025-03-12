@@ -4,17 +4,21 @@ import { drawCircle, findTangent, map2, random } from "./functions"
 import { Ripple } from "./ripple"
 
 const bodyPoints = [
-  0.426, 0.851, 0.957, 1.0, 0.979, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
+  0.326, 0.641, 0.817, 0.9, 0.97, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
   0.532, 0.426, 0.319,
 ]
-const finPoints = [0.526, 0.617, 0.434, 0.376, 0.224, 0.115, 0.05]
+const finPoints = [0.626, 0.717, 0.534, 0.376, 0.224, 0.155, 0.1]
+//const finPoints = [0.526, 0.517, 0.434, 0.576, 0.624, 0.665]
 const tailPoints = [0.326, 0.401, 0.328, 0.341, 0.283, 0.216, 0.155, 0.09]
+const backFinPoints = [0.5, 0.5, 0.5]
 
 export class Fish {
   gap: number
   body: Chain
   fins: { fin: Chain; radian: number; position: number }[]
   tails: { tail: Chain; radian: number; position: number }[]
+  backFins: { backFin: Chain; radian: number; position: number }[]
+  // backFin:
   bounds: { left: number; right: number; top: number; bottom: number }
   clickBox: HTMLAnchorElement
   cube: Cube
@@ -35,7 +39,7 @@ export class Fish {
     this.cube = new Cube(x, y, width * 0.3)
     this.bounds = { left: x, right: x, top: y, bottom: y }
 
-    const finPositions = [3, 3, 8, 8]
+    const finPositions = [3, 3, 6, 6]
     const finRadian = Math.PI / 1.8
     this.fins = finPositions.map((position, index) => {
       const finFactor = bodyPoints[position] * 0.8
@@ -44,7 +48,7 @@ export class Fish {
         x,
         y,
         this.gap * 0.5,
-        160 + 10 * (width / length),
+        (index <= 1 ? 165 : 155) + 20 * (width / length),
         finSizes
       )
       const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
@@ -58,6 +62,12 @@ export class Fish {
       const radian = tailRadian * (index % 2 == 0 ? 1 : -1)
       return { tail: newTail, radian: radian, position: position }
     })
+    const backFinPositions = [3]
+    this.backFins = backFinPositions.map((position) => {
+      const backFinSizes = backFinPoints.map((d) => 0 * d)
+      const newBackFin = new Chain(x, y, this.gap * 1.5, 120, backFinSizes)
+      return { backFin: newBackFin, radian: 0, position: position }
+    })
 
     const clickBox = document.createElement("a")
     clickBox.className = "fish-click-box"
@@ -69,6 +79,9 @@ export class Fish {
     clickBox.style.right = "0px"
     clickBox.style.border = "1px solid red"
     clickBox.style.opacity = "0"
+    clickBox.addEventListener("mouseover", (event) => {
+      this.triggerDash(event.clientX, event.clientY)
+    })
     clickBox.addEventListener("mousedown", (event) => {
       this.triggerDash(event.clientX, event.clientY)
     })
@@ -89,15 +102,21 @@ export class Fish {
 
     this.body.freeMove(x, y, width, height)
 
+    this.backFins.forEach((backFin) => {
+      const startPoint = this.body.circles[backFin.position].getPosition()
+      const nextPoint = this.body.circles[backFin.position + 1].getPosition()
+      const radian = findTangent(startPoint, nextPoint) + backFin.radian
+      backFin.backFin.constrainMove(startPoint.x, startPoint.y, radian, 1)
+    })
     this.fins.forEach((fin) => {
-      const finStartPoint = this.body.circles[fin.position].getPostion()
-      const nextBodyPoint = this.body.circles[fin.position + 1].getPostion()
+      const finStartPoint = this.body.circles[fin.position].getPosition()
+      const nextBodyPoint = this.body.circles[fin.position + 1].getPosition()
       const finRadian = findTangent(finStartPoint, nextBodyPoint) + fin.radian
-      fin.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian)
+      fin.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian, 0.8)
     })
     this.tails.forEach((tail) => {
-      const tailStartPoint = this.body.circles[tail.position].getPostion()
-      const nextTailPoint = this.body.circles[tail.position + 1].getPostion()
+      const tailStartPoint = this.body.circles[tail.position].getPosition()
+      const nextTailPoint = this.body.circles[tail.position + 1].getPosition()
       const tailRadian =
         findTangent(tailStartPoint, nextTailPoint) + tail.radian
       tail.tail.constrainMove(
@@ -116,29 +135,56 @@ export class Fish {
     this.body.drawOutline(ctx)
   }
 
+  drawBackFin(ctx: CanvasRenderingContext2D) {
+    this.backFins.forEach((backFin) => {
+      const endPosition = backFin.position + backFinPoints.length + 1
+      const finPoint = backFin.backFin.circles[backFinPoints.length - 1]
+      const startPoint = this.body.circles[backFin.position + 1]
+      const endPoint = this.body.circles[endPosition]
+      ctx.beginPath()
+      ctx.moveTo(startPoint.x, startPoint.y)
+      ctx.quadraticCurveTo(finPoint.x, finPoint.y, endPoint.x, endPoint.y)
+      const points = this.body.circles
+      for (let i = endPosition; i >= backFin.position + 2; i--) {
+        const x2 = (points[i].x + points[i - 1].x) / 2
+        const y2 = (points[i].y + points[i - 1].y) / 2
+        ctx.quadraticCurveTo(points[i].x, points[i].y, x2, y2)
+      }
+      ctx.quadraticCurveTo(
+        points[backFin.position + 2].x,
+        points[backFin.position + 2].y,
+        startPoint.x,
+        startPoint.y
+      )
+
+      ctx.fill()
+      ctx.stroke()
+    })
+  }
+
   drawRig(ctx: CanvasRenderingContext2D, color: string) {
     this.body.drawRig(ctx)
     color
-    //this.fins.forEach((fin) => fin.fin.drawRig(ctx))
-    //this.tails.forEach((tail) => tail.tail.drawRig(ctx))
-    //this.cube.drawRig(ctx)
-    //this.clickBox.style.borderColor = color
-    //this.clickBox.style.opacity = "1"
+    this.fins.forEach((fin) => fin.fin.drawRig(ctx))
+    this.tails.forEach((tail) => tail.tail.drawRig(ctx))
+    this.cube.drawRig(ctx)
+    this.clickBox.style.borderColor = color
+    this.clickBox.style.opacity = "1"
   }
 
   drawEyes(ctx: CanvasRenderingContext2D) {
-    const firstPoint = this.body.circles[0].getPostion()
-    const secondPoint = this.body.circles[1].getPostion()
+    const firstPoint = this.body.circles[0].getPosition()
+    const secondPoint = this.body.circles[1].getPosition()
     const radian = findTangent(firstPoint, secondPoint)
     const leftRadian = radian + Math.PI / 4
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
-      const eyeDistance = 1
+      const eyeDistance = this.body.circles[2].d * 0.5
       const eyeSize = 0.4
-      const displaceX = this.gap * eyeDistance * Math.cos(eyeRadian)
-      const displaceY = this.gap * eyeDistance * Math.sin(eyeRadian)
-      const x = this.body.circles[0].getPostion().x + displaceX
-      const y = this.body.circles[0].getPostion().y + displaceY
+      const displaceX = eyeDistance * Math.cos(eyeRadian)
+      const displaceY = eyeDistance * Math.sin(eyeRadian)
+      const x = this.body.circles[0].getPosition().x + displaceX
+      const y = this.body.circles[0].getPosition().y + displaceY
       drawCircle(ctx, x, y, this.gap * eyeSize)
     }
     drawEye(leftRadian)
@@ -148,16 +194,16 @@ export class Fish {
   updateBounds() {
     this.bounds = {
       left:
-        Math.min(...this.body.circles.map((circle) => circle.getPostion().x)) -
+        Math.min(...this.body.circles.map((circle) => circle.getPosition().x)) -
         this.gap,
       right:
-        Math.max(...this.body.circles.map((circle) => circle.getPostion().x)) +
+        Math.max(...this.body.circles.map((circle) => circle.getPosition().x)) +
         this.gap,
       top:
-        Math.min(...this.body.circles.map((circle) => circle.getPostion().y)) -
+        Math.min(...this.body.circles.map((circle) => circle.getPosition().y)) -
         this.gap,
       bottom:
-        Math.max(...this.body.circles.map((circle) => circle.getPostion().y)) +
+        Math.max(...this.body.circles.map((circle) => circle.getPosition().y)) +
         this.gap,
     }
     this.clickBox.style.left = `${this.bounds.left}px`

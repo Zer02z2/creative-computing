@@ -4,12 +4,17 @@ import { Ripple } from "./ripple"
 
 export const animateFish = () => {
   const canvasDiv = document.getElementById("fish-canvas") as HTMLDivElement
+  canvasDiv.style.width = "100vw"
+  canvasDiv.style.height = "100vh"
+  canvasDiv.style.position = "fixed"
+  canvasDiv.style.left = "0px"
+  canvasDiv.style.top = "0px"
   const canvas = document.createElement("canvas")
   canvasDiv.appendChild(canvas)
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
-  let showRig = true
+  let showRig = false
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
@@ -24,6 +29,19 @@ export const animateFish = () => {
   const fishRigColor = "rgb(20, 130, 255)"
   const boxRigColor = "rgb(80, 255, 118)"
 
+  const button = document.createElement("a")
+  button.style.position = "absolute"
+  button.style.right = "3rem"
+  button.style.bottom = "2rem"
+  button.style.zIndex = "1000"
+  button.style.mixBlendMode = "exclusion"
+  const span = document.createElement("span")
+  span.className = "body-text-heavy"
+  span.style.color = "white"
+  span.innerHTML = "show secret"
+  button.appendChild(span)
+  canvasDiv.appendChild(button)
+
   const fishes = Array.from({ length: 3 }).map(() => {
     const fishSize =
       Math.sqrt(canvas.width ** 2 + canvas.height ** 2) *
@@ -34,8 +52,8 @@ export const animateFish = () => {
     return new Fish(
       getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
       getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
-      fishSize * random(6, 8),
-      fishSize * random(0.9, 1.2),
+      fishSize * random(6, 8.5),
+      fishSize * random(1.2, 1.5),
       canvasDiv
     )
   })
@@ -43,14 +61,19 @@ export const animateFish = () => {
 
   const mousePosition = { x: 0, y: 0 }
 
+  button.addEventListener("mouseup", () => {
+    showRig = !showRig
+    span.innerHTML = `${showRig ? "hide" : "show"} secret`
+  })
+
   document.addEventListener("mousemove", (event) => {
     mousePosition.x = event.clientX
     mousePosition.y = event.clientY
   })
-  // document.addEventListener("mousedown", (event) => {
-  //   const ripple = new Ripple(event.clientX, event.clientY, 255)
-  //   ripples.push(ripple)
-  // })
+  document.addEventListener("mousedown", (event) => {
+    const ripple = new Ripple(event.clientX, event.clientY, 100, 0)
+    ripples.push(ripple)
+  })
 
   window.addEventListener("resize", () => {
     canvas.width = window.innerWidth
@@ -99,21 +122,20 @@ export const animateFish = () => {
       ctx.strokeStyle = fishOutlineColor
       ctx.lineWidth = 2
       fish.drawBody(ctx)
-    })
 
-    if (showRig) {
-      ctx.fillStyle = fishColor
-      ctx.strokeStyle = fishRigColor
-      ctx.lineWidth = 1
-      fishes.forEach((fish) => {
+      if (showRig) {
+        ctx.fillStyle = fishColor
+        ctx.strokeStyle = fishRigColor
+        ctx.lineWidth = 1
         fish.drawRig(ctx, boxRigColor)
-      })
-    }
+      }
 
-    fishes.forEach((fish) => {
+      ctx.lineWidth = 1
+
+      fish.drawBackFin(ctx)
+
       ctx.fillStyle = fishOutlineColor
       ctx.strokeStyle = fishColor
-      ctx.lineWidth = 1
       fish.drawEyes(ctx)
     })
 
