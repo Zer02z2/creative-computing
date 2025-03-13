@@ -3,7 +3,8 @@ import { random, getRandom, Point } from "./functions"
 import { Ripple } from "./ripple"
 
 export const animateFish = () => {
-  const canvasDiv = document.getElementById("fish-canvas") as HTMLDivElement
+  const canvasDiv = document.getElementById("fish-canvas")
+  if (!canvasDiv) return
   canvasDiv.style.width = "100vw"
   canvasDiv.style.height = "100vh"
   canvasDiv.style.position = "fixed"
@@ -14,6 +15,8 @@ export const animateFish = () => {
   const ctx = canvas.getContext("2d")
   if (!ctx) return
 
+  const frameRate = 60
+  let lastFrame = new Date().getTime()
   let showRig = false
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
@@ -23,11 +26,15 @@ export const animateFish = () => {
   canvas.style.top = "0px"
   canvas.style.left = "0px"
 
-  const backgroundColor = "rgb(10, 10, 10)"
-  const fishColor = "rgb(10, 10, 10)"
-  const fishOutlineColor = "rgb(255, 255, 255)"
-  const fishRigColor = "rgb(20, 130, 255)"
-  const boxRigColor = "rgb(80, 255, 118)"
+  const rigColorSets = [
+    { fish: "rgb(192, 102, 192)", box: "rgb(68, 153, 43)" },
+    { fish: "rgb(36, 109, 243)", box: "rgb(59, 192, 42)" },
+  ]
+  let currentRigColorIndex = 0
+
+  const backgroundColor = "rgb(15, 15, 15)"
+  const fishColor = "rgb(20, 20, 20)"
+  const fishOutlineColor = "rgb(168, 168, 168)"
 
   const button = document.createElement("a")
   button.style.position = "absolute"
@@ -64,6 +71,9 @@ export const animateFish = () => {
   button.addEventListener("mouseup", () => {
     showRig = !showRig
     span.innerHTML = `${showRig ? "hide" : "show"} secret`
+    if (showRig) {
+      currentRigColorIndex = Math.floor(random(0, rigColorSets.length))
+    }
   })
 
   document.addEventListener("mousemove", (event) => {
@@ -88,6 +98,14 @@ export const animateFish = () => {
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // update fish target position at max frame rate
+    if (new Date().getTime() - lastFrame >= 1000 / frameRate) {
+      fishes.forEach((fish) => {
+        fish.update(canvas)
+      })
+      lastFrame = new Date().getTime()
+    }
 
     // animate fish
     fishes.forEach((fish) => {
@@ -124,10 +142,11 @@ export const animateFish = () => {
       fish.drawBody(ctx)
 
       if (showRig) {
+        const rigColor = rigColorSets[currentRigColorIndex]
         ctx.fillStyle = fishColor
-        ctx.strokeStyle = fishRigColor
+        ctx.strokeStyle = rigColor.fish
         ctx.lineWidth = 1
-        fish.drawRig(ctx, boxRigColor)
+        fish.drawRig(ctx, rigColor.box)
       }
 
       ctx.lineWidth = 1

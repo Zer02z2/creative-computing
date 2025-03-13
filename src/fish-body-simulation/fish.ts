@@ -30,7 +30,7 @@ export class Fish {
     y: number,
     length: number,
     width: number,
-    canvasDiv: HTMLDivElement
+    canvasDiv: HTMLElement
   ) {
     this.gap = length / bodyPoints.length
     const smallestAngle = 160
@@ -90,14 +90,19 @@ export class Fish {
     this.rippleCooldown = generateRandomCooldown()
     this.lastRippleTime = new Date().getTime()
   }
+  update(canvas: HTMLCanvasElement) {
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+    const width = canvas.width
+    const height = canvas.height
+    this.cube.update(width, height)
+  }
 
   move(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
     const width = canvas.width
     const height = canvas.height
-
-    this.cube.update(width, height)
     const { x, y } = this.cube.getPosition()
 
     this.body.freeMove(x, y, width, height)

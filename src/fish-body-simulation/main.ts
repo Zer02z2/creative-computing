@@ -59,6 +59,7 @@ const init = () => {
     zongzeCursor.style.alignItems = "center"
     zongzeCursor.style.backgroundColor = "white"
     zongzeCursor.style.mixBlendMode = "exclusion"
+    zongzeCursor.style.opacity = "0"
     readMore.className = "caption"
     readMore.style.color = "black"
     readMore.style.fontSize = `${readMoreSize}rem`
@@ -86,15 +87,28 @@ const init = () => {
   }
 
   let lastHoveredLink: Element | undefined = undefined
+  let firstEntrance = true
 
-  document.body.addEventListener("mousemove", (event) => {
-    cursorLocation.xTarget = event.clientX
-    cursorLocation.yTarget = event.clientY
-  })
-  document.body.addEventListener("mousedown", () => {
-    bouncing = true
-    bounceCurrentSteps = 0
-  })
+  if (!window.matchMedia("(pointer: coarse)").matches) {
+    document.body.addEventListener("mousemove", (event) => {
+      if (firstEntrance) {
+        zongzeCursor.style.opacity = "1"
+        cursorLocation.x = event.clientX
+        cursorLocation.y = event.clientY
+        cursorLocation.xTarget = event.clientX
+        cursorLocation.yTarget = event.clientY
+        moveCursor(event.clientX, event.clientY)
+        firstEntrance = false
+      } else {
+        cursorLocation.xTarget = event.clientX
+        cursorLocation.yTarget = event.clientY
+      }
+    })
+    document.body.addEventListener("mousedown", () => {
+      bouncing = true
+      bounceCurrentSteps = 0
+    })
+  }
 
   let speed = 0.25
 

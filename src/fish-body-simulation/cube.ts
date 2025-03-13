@@ -26,16 +26,16 @@ export class Cube {
     this.h = this.w
     this.directionX = Math.random() < 0.5 ? 1 : -1
     this.directionY = Math.random() < 0.5 ? 1 : -1
-    this.pBoost = 0.002
+    this.pBoost = 0.004
     this.pDirectionChange = 0.001
   }
   update(xBound: number, yBound: number) {
-    if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.001) {
+    if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.002) {
       this.vX = this.boostVelocity()
       this.vY = random(0, this.vX)
       this.directionX *= Math.random() < 0.2 ? -1 : 1
     }
-    if (Math.random() < this.pBoost || this.vY - this.vMin <= 0.001) {
+    if (Math.random() < this.pBoost || this.vY - this.vMin <= 0.002) {
       this.vY = this.boostVelocity()
       this.vX = random(0, this.vY)
       this.directionY *= Math.random() < 0.2 ? -1 : 1
