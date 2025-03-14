@@ -34,6 +34,13 @@ export const isOnLeft = (pointA: Point, pointB: Point, pointC: Point) => {
   )
 }
 
+export const findPosition = (pointA: Point, radian: number, length: number) => {
+  const { x, y } = pointA
+  const x1 = x + length * Math.cos(radian)
+  const y1 = y + length * Math.sin(radian)
+  return { x: x1, y: y1 }
+}
+
 export const lerp = (begin: number, target: number, increase: number) => {
   return begin + (target - begin) * increase
 }

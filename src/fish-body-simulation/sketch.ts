@@ -1,6 +1,7 @@
-import { Fish } from "./fish"
+import { Fish } from "./fish/fish"
 import { random, getRandom, Point } from "./functions"
-import { Ripple } from "./ripple"
+import { Leaf } from "./leaf/leaf"
+import { Ripple } from "./ripple/ripple"
 
 export const animateFish = () => {
   const canvasDiv = document.getElementById("fish-canvas")
@@ -35,6 +36,7 @@ export const animateFish = () => {
   const backgroundColor = "rgb(10, 10, 10)"
   const fishColor = "rgb(20, 20, 20)"
   const fishOutlineColor = "rgb(220, 220, 220)"
+  const leafColor = "rgb(65, 150, 59)"
 
   const button = document.createElement("a")
   button.style.position = "absolute"
@@ -66,6 +68,14 @@ export const animateFish = () => {
   })
   const ripples: Ripple[] = []
 
+  const leaves: Leaf[] = Array.from({ length: 10 }).map(() => {
+    const x = random(0, window.innerWidth)
+    const y = random(0, window.innerHeight)
+    const size = Math.sqrt(canvas.width ** 2 + canvas.height ** 2)
+    const radius = random(size * 0.02, size * 0.05)
+    return new Leaf(x, y, radius, 32)
+  })
+
   const mousePosition = { x: 0, y: 0 }
 
   button.addEventListener("mouseup", () => {
@@ -91,10 +101,6 @@ export const animateFish = () => {
   })
 
   const animate = () => {
-    // if (!document.getElementById("fish-canvas")) {
-    //   fishes.forEach((fish) => fish.unmount())
-    //   return
-    // }
     requestAnimationFrame(animate)
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -169,6 +175,11 @@ export const animateFish = () => {
       const reflectRipples = ripple.detectBouncing(canvas)
       if (!reflectRipples) return
       ripples.push(...reflectRipples)
+    })
+    leaves.forEach((leaf) => {
+      ctx.fillStyle = leafColor
+      ctx.strokeStyle = backgroundColor
+      leaf.drawLeaf(ctx)
     })
   }
   animate()

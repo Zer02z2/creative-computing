@@ -1,4 +1,4 @@
-import { random, rect } from "./functions"
+import { random, rect } from "../functions"
 
 export class Cube {
   x: number
@@ -26,7 +26,7 @@ export class Cube {
     this.h = this.w
     this.directionX = Math.random() < 0.5 ? 1 : -1
     this.directionY = Math.random() < 0.5 ? 1 : -1
-    this.pBoost = 0.004
+    this.pBoost = 0.01
     this.pDirectionChange = 0.001
   }
   update(xBound: number, yBound: number) {

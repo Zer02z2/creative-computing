@@ -6,7 +6,7 @@ import {
   lerp,
   map2,
   Point,
-} from "./functions"
+} from "../functions"
 
 export class Circle {
   x: number

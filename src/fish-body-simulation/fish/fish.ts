@@ -1,7 +1,7 @@
 import { Chain } from "./chain"
 import { Cube } from "./cube"
-import { drawCircle, findTangent, map2, random } from "./functions"
-import { Ripple } from "./ripple"
+import { drawCircle, findTangent, map2, random } from "../functions"
+import { Ripple } from "../ripple/ripple"
 
 const bodyPoints = [
   0.326, 0.641, 0.817, 0.9, 0.97, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
@@ -33,7 +33,7 @@ export class Fish {
     canvasDiv: HTMLElement
   ) {
     this.gap = length / bodyPoints.length
-    const smallestAngle = 160
+    const smallestAngle = 165
     const sizes = bodyPoints.map((d) => d * width)
     this.body = new Chain(x, y, this.gap, smallestAngle, sizes)
     this.cube = new Cube(x, y, width * 0.3)
@@ -47,7 +47,7 @@ export class Fish {
       const newFin = new Chain(
         x,
         y,
-        this.gap * 0.015 * width,
+        this.gap * 2.5 * (width / length),
         (index <= 1 ? 165 : 155) + 20 * (width / length),
         finSizes
       )

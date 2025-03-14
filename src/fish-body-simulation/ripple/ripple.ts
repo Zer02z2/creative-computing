@@ -1,4 +1,4 @@
-import { map2 } from "./functions"
+import { map2 } from "../functions"
 
 interface RippleData {
   initialIntensity: number
