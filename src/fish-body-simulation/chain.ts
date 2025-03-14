@@ -39,7 +39,7 @@ export class Chain {
 
   freeMove(x: number, y: number, width: number, height: number) {
     const acceleration = this.circles[0].followMouse(x, y, width, height)
-    this.frameCount += 15 * Math.log(0.3 * acceleration + 1)
+    this.frameCount += 10 * Math.log(0.3 * acceleration + 1)
 
     const oscillateScale = (Math.PI / 4) * Math.log(2 * acceleration + 1)
 

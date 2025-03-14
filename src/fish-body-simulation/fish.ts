@@ -47,7 +47,7 @@ export class Fish {
       const newFin = new Chain(
         x,
         y,
-        this.gap * 0.5,
+        this.gap * 0.015 * width,
         (index <= 1 ? 165 : 155) + 20 * (width / length),
         finSizes
       )

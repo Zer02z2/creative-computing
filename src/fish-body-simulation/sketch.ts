@@ -32,9 +32,9 @@ export const animateFish = () => {
   ]
   let currentRigColorIndex = 0
 
-  const backgroundColor = "rgb(15, 15, 15)"
+  const backgroundColor = "rgb(10, 10, 10)"
   const fishColor = "rgb(20, 20, 20)"
-  const fishOutlineColor = "rgb(168, 168, 168)"
+  const fishOutlineColor = "rgb(220, 220, 220)"
 
   const button = document.createElement("a")
   button.style.position = "absolute"
@@ -60,7 +60,7 @@ export const animateFish = () => {
       getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
       getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
       fishSize * random(6, 8.5),
-      fishSize * random(1.2, 1.5),
+      fishSize * random(1.3, 1.6),
       canvasDiv
     )
   })

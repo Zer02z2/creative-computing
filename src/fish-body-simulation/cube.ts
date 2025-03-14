@@ -19,7 +19,7 @@ export class Cube {
     this.y = y
     this.vMax = vMax
     this.vMin = vMax * 0
-    this.vDash = vMax * 3
+    this.vDash = vMax * 2
     this.vX = random(0, this.vMax)
     this.vY = random(0, this.vMax)
     this.w = window.innerWidth * 0.01
