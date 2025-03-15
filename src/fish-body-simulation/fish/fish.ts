@@ -4,12 +4,12 @@ import { drawCircle, findTangent, map2, random } from "../functions"
 import { Ripple } from "../ripple/ripple"
 
 const bodyPoints = [
-  0.326, 0.641, 0.817, 0.9, 0.97, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
-  0.532, 0.426, 0.319,
+  0.326, 0.641, 0.817, 0.9, 0.97, 0.957, 0.872, 0.787, 0.702, 0.618, 0.516,
+  0.414, 0.316, 0.219,
 ]
 const finPoints = [0.226, 0.217, 0.334, 0.476, 0.424, 0.355, 0.11]
 //const finPoints = [0.526, 0.517, 0.434, 0.576, 0.624, 0.665]
-const tailPoints = [0.326, 0.401, 0.328, 0.341, 0.283, 0.216, 0.155, 0.09]
+const tailPoints = [0.326, 0.321, 0.32, 0.294, 0.283, 0.216, 0.155, 0.09]
 const backFinPoints = [0.5, 0.5, 0.5]
 
 export class Fish {
@@ -56,14 +56,14 @@ export class Fish {
       const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
       return { fin: newFin, position: position, radian: radian }
     })
-    const tailRadian = Math.PI / 3
-    const tailPositions = [12, 12, 12, 12]
+    const tailRadian = Math.PI / 5
+    const tailPositions = [12, 12]
     this.tails = tailPositions.map((position, index) => {
       const tailSizes = tailPoints.map((d) => width * d)
       const newTail = new Chain(
         x,
         y,
-        this.gap * random(0.7, 0.9),
+        this.gap * 0.5 * random(0.7, 0.9),
         120,
         tailSizes
       )
@@ -202,7 +202,7 @@ export class Fish {
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
       const eyeDistance = this.body.circles[2].d * 0.5
-      const eyeSize = 0.6
+      const eyeSize = 0.4
       const displaceX = eyeDistance * Math.cos(eyeRadian)
       const displaceY = eyeDistance * Math.sin(eyeRadian)
       const x = this.body.circles[0].getPosition().x + displaceX
