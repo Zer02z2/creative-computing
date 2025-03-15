@@ -39,16 +39,16 @@ export class Chain {
 
   freeMove(x: number, y: number, width: number, height: number) {
     const acceleration = this.circles[0].followMouse(x, y, width, height)
-    this.frameCount += 15 * Math.log(0.3 * acceleration + 1)
+    this.frameCount += 25 * Math.log(0.3 * acceleration + 1)
 
-    const oscillateScale = (Math.PI / 4) * Math.log(2 * acceleration + 1)
+    const oscillateScale = (Math.PI / 5) * Math.log(2 * acceleration + 1)
 
     for (let i = 1; i < this.circles.length; i++) {
       const oscillateOffset = i * this.circles.length * Math.PI * 1.1368
       const oscillateRadian =
         Math.sin(this.frameCount + oscillateOffset) *
         oscillateScale *
-        map2(i, 0, this.circles.length, 0.5, 2)
+        map2(i, 0, this.circles.length, 0.5, 3)
 
       this.circles[i].followBody(
         this.circles[i - 1],
@@ -93,6 +93,19 @@ export class Chain {
     this.circles[1].teleport(x + displaceX, y + displaceY)
 
     for (let i = 2; i < this.circles.length; i++) {
+      this.circles[i].followBody(
+        this.circles[i - 1],
+        // only detect contrain starting from the 3rd circle
+        this.circles[i - 2] || undefined,
+        this.gap,
+        this.smallestAngle
+      )
+    }
+  }
+
+  simpleMove(x: number, y: number, width: number, height: number) {
+    this.circles[0].followMouse(x, y, width, height)
+    for (let i = 1; i < this.circles.length; i++) {
       this.circles[i].followBody(
         this.circles[i - 1],
         // only detect contrain starting from the 3rd circle

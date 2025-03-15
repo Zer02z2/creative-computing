@@ -1,10 +1,12 @@
 import { random, rect } from "../functions"
+import { Chain } from "./chain"
 
 export class Cube {
   x: number
   y: number
   vX: number
   vY: number
+  chain: Chain
   directionX: 1 | -1
   directionY: 1 | -1
   vMax: number
@@ -18,7 +20,7 @@ export class Cube {
     this.x = x
     this.y = y
     this.vMax = vMax
-    this.vMin = vMax * 0
+    this.vMin = vMax * 0.2
     this.vDash = vMax * 2
     this.vX = random(0, this.vMax)
     this.vY = random(0, this.vMax)
@@ -28,6 +30,13 @@ export class Cube {
     this.directionY = Math.random() < 0.5 ? 1 : -1
     this.pBoost = 0.005
     this.pDirectionChange = 0.001
+    this.chain = new Chain(
+      x,
+      y,
+      vMax,
+      160,
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+    )
   }
   update(xBound: number, yBound: number) {
     if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.002) {
@@ -51,8 +60,9 @@ export class Cube {
 
     this.x += this.vX * this.directionX
     this.y += this.vY * this.directionY
-
     this.preventOverBoarder(xBound, yBound)
+
+    this.chain.simpleMove(this.x, this.y, xBound, yBound)
   }
   boostVelocity() {
     return random(this.vMax / 2, this.vMax)
@@ -82,8 +92,10 @@ export class Cube {
   }
   drawRig(ctx: CanvasRenderingContext2D) {
     rect(ctx, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
+    this.chain.drawRig(ctx)
   }
   getPosition() {
-    return { x: this.x, y: this.y }
+    const length = this.chain.circles.length
+    return this.chain.circles[length - 1].getPosition()
   }
 }

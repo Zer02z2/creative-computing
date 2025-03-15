@@ -36,7 +36,7 @@ export class Fish {
     const smallestAngle = 165
     const sizes = bodyPoints.map((d) => d * width)
     this.body = new Chain(x, y, this.gap, smallestAngle, sizes)
-    this.cube = new Cube(x, y, width * 0.3)
+    this.cube = new Cube(x, y, width * 0.15)
     this.bounds = { left: x, right: x, top: y, bottom: y }
 
     const finPositions = [2, 2, 6, 6]
@@ -229,8 +229,8 @@ export class Fish {
         Math.max(...this.body.circles.map((circle) => circle.getPosition().y)) +
         this.gap,
     }
-    this.clickBox.style.left = `${this.bounds.left / 2}px`
-    this.clickBox.style.top = `${this.bounds.top / 2}px`
+    this.clickBox.style.left = `${this.bounds.left / dpr}px`
+    this.clickBox.style.top = `${this.bounds.top / dpr}px`
     this.clickBox.style.width = `${
       (this.bounds.right - this.bounds.left) / dpr
     }px`
@@ -241,6 +241,12 @@ export class Fish {
   }
 
   triggerDash(x: number, y: number) {
+    const vX = this.cube.vX * this.cube.directionX
+    const vY = this.cube.vY * this.cube.directionY
+    const radian = Math.atan2(vY, vX)
+    this.cube.dash(radian)
+  }
+  triggerDirectionalDash(x: number, y: number) {
     const centerPoint = {
       x: (this.bounds.right + this.bounds.left) / 2,
       y: (this.bounds.bottom + this.bounds.top) / 2,
