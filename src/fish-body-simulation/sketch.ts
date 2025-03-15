@@ -19,17 +19,20 @@ export const animateFish = () => {
   const frameRate = 60
   let lastFrame = new Date().getTime()
   let showRig = false
-  const dpr = window.devicePixelRatio || 1
-  const width = window.innerWidth * dpr
-  const height = window.innerHeight * dpr
-  canvas.width = width
-  canvas.height = height
-  ctx.scale(dpr, dpr)
 
   canvas.style.zIndex = "998"
   canvas.style.position = "fixed"
   canvas.style.top = "0px"
   canvas.style.left = "0px"
+
+  const setCanvasSize = () => {
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = window.innerWidth * dpr
+    canvas.height = window.innerHeight * dpr
+    canvas.style.width = `${window.innerWidth}px`
+    canvas.style.height = `${window.innerHeight}px`
+  }
+  setCanvasSize()
 
   const rigColorSets = [
     { fish: "rgb(192, 102, 192)", box: "rgb(68, 153, 43)" },
@@ -103,8 +106,7 @@ export const animateFish = () => {
   })
 
   window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth * dpr
-    canvas.height = window.innerHeight * dpr
+    setCanvasSize()
   })
 
   const animate = () => {

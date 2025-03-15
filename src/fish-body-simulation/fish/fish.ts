@@ -214,6 +214,7 @@ export class Fish {
   }
 
   updateBounds() {
+    const dpr = window.devicePixelRatio || 1
     this.bounds = {
       left:
         Math.min(...this.body.circles.map((circle) => circle.getPosition().x)) -
@@ -228,10 +229,14 @@ export class Fish {
         Math.max(...this.body.circles.map((circle) => circle.getPosition().y)) +
         this.gap,
     }
-    this.clickBox.style.left = `${this.bounds.left}px`
-    this.clickBox.style.top = `${this.bounds.top}px`
-    this.clickBox.style.width = `${this.bounds.right - this.bounds.left}px`
-    this.clickBox.style.height = `${this.bounds.bottom - this.bounds.top}px`
+    this.clickBox.style.left = `${this.bounds.left / 2}px`
+    this.clickBox.style.top = `${this.bounds.top / 2}px`
+    this.clickBox.style.width = `${
+      (this.bounds.right - this.bounds.left) / dpr
+    }px`
+    this.clickBox.style.height = `${
+      (this.bounds.bottom - this.bounds.top) / dpr
+    }px`
     this.clickBox.style.opacity = "0"
   }
 
