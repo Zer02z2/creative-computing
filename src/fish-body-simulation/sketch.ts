@@ -19,6 +19,7 @@ export const animateFish = () => {
   const frameRate = 60
   let lastFrame = new Date().getTime()
   let showRig = false
+  const dpr = window.devicePixelRatio || 1
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
@@ -34,9 +35,10 @@ export const animateFish = () => {
   let currentRigColorIndex = 0
 
   const backgroundColor = "rgb(10, 10, 10)"
-  const fishColor = "rgb(20, 20, 20)"
-  const fishOutlineColor = "rgb(220, 220, 220)"
-  const leafColor = "rgb(65, 150, 59)"
+  const fishColor = "rgb(190, 190, 190)"
+  const fishFinColor = "rgba(227, 86, 39, 0.7)"
+  const fishOutlineColor = "rgb(40, 40, 40)"
+  const fishTailColor = "rgba(227, 86, 39, 0.3)"
 
   const button = document.createElement("a")
   button.style.position = "absolute"
@@ -58,22 +60,27 @@ export const animateFish = () => {
       random(0.8, 1.2)
     const x = random(0, canvas.width)
     const y = random(0, canvas.height)
+    const length = fishSize * random(6, 8.5)
     return new Fish(
       getRandom([-1, 1]) * 2 * x * random(0.8, 1.2),
       getRandom([-1, 1]) * 2 * y * random(0.8, 1.2),
       fishSize * random(6, 8.5),
-      fishSize * random(1.3, 1.6),
+      length * random(0.2, 0.24),
       canvasDiv
     )
   })
   const ripples: Ripple[] = []
 
-  const leaves: Leaf[] = Array.from({ length: 10 }).map(() => {
+  const leaves = Array.from({ length: 10 }).map(() => {
     const x = random(0, window.innerWidth)
     const y = random(0, window.innerHeight)
     const size = Math.sqrt(canvas.width ** 2 + canvas.height ** 2)
     const radius = random(size * 0.02, size * 0.05)
-    return new Leaf(x, y, radius, 32)
+    const leafColor = `rgb(${random(50, 70)}, ${random(145, 155)}, ${random(
+      44,
+      63
+    )})`
+    return { leaf: new Leaf(x, y, radius, 32), color: leafColor }
   })
 
   const mousePosition = { x: 0, y: 0 }
@@ -142,9 +149,13 @@ export const animateFish = () => {
 
     // render fish
     fishes.forEach((fish) => {
-      ctx.fillStyle = fishColor
       ctx.strokeStyle = fishOutlineColor
       ctx.lineWidth = 2
+      ctx.fillStyle = fishFinColor
+      fish.drawFins(ctx)
+      ctx.fillStyle = fishTailColor
+      fish.drawTail(ctx)
+      ctx.fillStyle = fishColor
       fish.drawBody(ctx)
 
       if (showRig) {
@@ -156,7 +167,7 @@ export const animateFish = () => {
       }
 
       ctx.lineWidth = 1
-
+      ctx.fillStyle = fishFinColor
       fish.drawBackFin(ctx)
 
       ctx.fillStyle = fishOutlineColor
@@ -176,9 +187,13 @@ export const animateFish = () => {
       if (!reflectRipples) return
       ripples.push(...reflectRipples)
     })
-    leaves.forEach((leaf) => {
-      ctx.fillStyle = leafColor
-      ctx.strokeStyle = backgroundColor
+    leaves.forEach((thisLeaf) => {
+      const { leaf, color } = thisLeaf
+      ctx.fillStyle = color
+      ctx.strokeStyle = "rgba(0,0,0,0)"
+      ctx.lineWidth = 2
+      // ctx.fillStyle = "rgba(0,0,0,0)"
+      // ctx.strokeStyle = fishOutlineColor
       leaf.drawLeaf(ctx)
     })
   }

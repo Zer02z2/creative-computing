@@ -7,7 +7,7 @@ const bodyPoints = [
   0.326, 0.641, 0.817, 0.9, 0.97, 0.957, 0.872, 0.787, 0.702, 0.638, 0.596,
   0.532, 0.426, 0.319,
 ]
-const finPoints = [0.626, 0.717, 0.534, 0.376, 0.224, 0.155, 0.1]
+const finPoints = [0.226, 0.217, 0.334, 0.476, 0.424, 0.355, 0.11]
 //const finPoints = [0.526, 0.517, 0.434, 0.576, 0.624, 0.665]
 const tailPoints = [0.326, 0.401, 0.328, 0.341, 0.283, 0.216, 0.155, 0.09]
 const backFinPoints = [0.5, 0.5, 0.5]
@@ -39,27 +39,35 @@ export class Fish {
     this.cube = new Cube(x, y, width * 0.3)
     this.bounds = { left: x, right: x, top: y, bottom: y }
 
-    const finPositions = [3, 3, 6, 6]
+    const finPositions = [2, 2, 6, 6]
     const finRadian = Math.PI / 1.8
     this.fins = finPositions.map((position, index) => {
       const finFactor = bodyPoints[position] * 0.8
-      const finSizes = finPoints.map((d) => d * width * finFactor)
+      const finSizes = finPoints.map(
+        (d) => d * width * (index <= 1 ? 1.5 : 1) * finFactor
+      )
       const newFin = new Chain(
         x,
         y,
         this.gap * 2.5 * (width / length),
-        (index <= 1 ? 165 : 155) + 20 * (width / length),
+        (index <= 1 ? 175 : 155) + 20 * (width / length),
         finSizes
       )
       const radian = finRadian * (index % 2 == 0 ? 1 : -1) * finFactor
       return { fin: newFin, position: position, radian: radian }
     })
-    const tailRadian = Math.PI / 5
-    const tailPositions = [12, 12]
+    const tailRadian = Math.PI / 3
+    const tailPositions = [12, 12, 12, 12]
     this.tails = tailPositions.map((position, index) => {
       const tailSizes = tailPoints.map((d) => width * d)
-      const newTail = new Chain(x, y, this.gap * 0.5, 160, tailSizes)
-      const radian = tailRadian * (index % 2 == 0 ? 1 : -1)
+      const newTail = new Chain(
+        x,
+        y,
+        this.gap * random(0.7, 0.9),
+        120,
+        tailSizes
+      )
+      const radian = random(0, tailRadian) * (index % 2 == 0 ? 1 : -1)
       return { tail: newTail, radian: radian, position: position }
     })
     const backFinPositions = [3]
@@ -113,11 +121,16 @@ export class Fish {
       const radian = findTangent(startPoint, nextPoint) + backFin.radian
       backFin.backFin.constrainMove(startPoint.x, startPoint.y, radian, 1)
     })
-    this.fins.forEach((fin) => {
+    this.fins.forEach((fin, index) => {
       const finStartPoint = this.body.circles[fin.position].getPosition()
       const nextBodyPoint = this.body.circles[fin.position + 1].getPosition()
       const finRadian = findTangent(finStartPoint, nextBodyPoint) + fin.radian
-      fin.fin.constrainMove(finStartPoint.x, finStartPoint.y, finRadian, 0.8)
+      fin.fin.constrainMove(
+        finStartPoint.x,
+        finStartPoint.y,
+        finRadian,
+        index <= 1 ? 0.3 : 0.8
+      )
     })
     this.tails.forEach((tail) => {
       const tailStartPoint = this.body.circles[tail.position].getPosition()
@@ -135,9 +148,13 @@ export class Fish {
   }
 
   drawBody(ctx: CanvasRenderingContext2D) {
-    this.fins.forEach((fin) => fin.fin.drawOutline(ctx))
-    this.tails.forEach((tail) => tail.tail.drawOutline(ctx))
     this.body.drawOutline(ctx)
+  }
+  drawFins(ctx: CanvasRenderingContext2D) {
+    this.fins.forEach((fin) => fin.fin.drawOutline(ctx))
+  }
+  drawTail(ctx: CanvasRenderingContext2D) {
+    this.tails.forEach((tail) => tail.tail.drawOutline(ctx))
   }
 
   drawBackFin(ctx: CanvasRenderingContext2D) {
@@ -185,7 +202,7 @@ export class Fish {
     const rightRadian = radian - Math.PI / 4
     const drawEye = (eyeRadian: number) => {
       const eyeDistance = this.body.circles[2].d * 0.5
-      const eyeSize = 0.4
+      const eyeSize = 0.6
       const displaceX = eyeDistance * Math.cos(eyeRadian)
       const displaceY = eyeDistance * Math.sin(eyeRadian)
       const x = this.body.circles[0].getPosition().x + displaceX

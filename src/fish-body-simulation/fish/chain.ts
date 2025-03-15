@@ -184,7 +184,7 @@ export class Chain {
     )
     //ctx.moveTo(points[0].x, points[0].y)
 
-    for (let i = 1; i < length - 1; i++) {
+    for (let i = 1; i < length - 2; i++) {
       const x2 = (points[i].x + points[i + 1].x) / 2
       const y2 = (points[i].y + points[i + 1].y) / 2
       ctx.quadraticCurveTo(points[i].x, points[i].y, x2, y2)
