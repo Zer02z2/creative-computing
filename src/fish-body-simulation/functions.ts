@@ -107,14 +107,9 @@ export const getRandom = (arr: number[]) => {
   return arr[index]
 }
 
-export const map2 = (
-  target: number,
-  range1A: number,
-  range1B: number,
-  range2A: number,
-  range2B: number
-): number => {
-  const percentage = (target - range1A) / (range1B - range1A)
-  const value = range2A + (range2B - range2A) * percentage
-  return value
+export const normalizeVector = (vector: Point, magnitude: number) => {
+  const radian = findTangent({ x: 0, y: 0 }, { x: vector.x, y: vector.y })
+  const vX = magnitude * Math.cos(radian)
+  const vY = magnitude * Math.sin(radian)
+  return { x: vX, y: vY }
 }

@@ -4,7 +4,7 @@ import {
   findTangent,
   isOnLeft,
   lerp,
-  map2,
+  map,
   Point,
 } from "../functions"
 
@@ -25,7 +25,7 @@ export class Circle {
     const radian =
       findTangent({ x: this.x, y: this.y }, { x: x, y: y }) + 0.5 * Math.PI
 
-    const factor = map2(
+    const factor = map(
       dist(this.x, this.y, mouseX, mouseY),
       0,
       Math.sqrt(width ** 2 + height ** 2),

@@ -1,14 +1,17 @@
-import { findPosition, line, Point, random } from "../functions"
+import { findPosition, normalizeVector, Point, random } from "../functions"
 
 export class Leaf {
   radius: number
-  x: number
-  y: number
+  x: { original: number; current: number; target: number }
+  y: { original: number; current: number; target: number }
   points: { length: number; radian: number }[]
+  frameCount: number
+  oscillateVector: { x: number; y: number }
+  oscillateMax: number
 
   constructor(x: number, y: number, radius: number, segments: number) {
-    this.x = x
-    this.y = y
+    this.x = { original: x, current: x, target: x }
+    this.y = { original: y, current: y, target: y }
     this.radius = radius
     const firstPointRadian = random(0, 2 * Math.PI)
     const segmentRadian = (2 * Math.PI) / segments
@@ -22,12 +25,48 @@ export class Leaf {
       const radian = firstPointRadian + segmentRadian * index
       return { length: length, radian: radian }
     })
+    this.frameCount = 0
+    this.oscillateVector = { x: 0, y: 0 }
+    this.oscillateMax = radius * 0.4
+  }
+  update() {
+    const { x, y } = this.oscillateVector
+    const acceleration = Math.sqrt(x ** 2 + y ** 2)
+    this.frameCount += 0.1 * Math.log(0.3 * acceleration + 1)
+    const xOffset = Math.sin(this.frameCount) * x
+    const yOffset = Math.sin(this.frameCount) * y
+    this.x.target = this.x.original + xOffset
+    this.y.target = this.y.original + yOffset
+
+    this.oscillateVector.x *= 0.99
+    this.oscillateVector.y *= 0.99
+  }
+  applyOscillation(x: number, y: number, strength: number) {
+    const newVector = normalizeVector(
+      { x: this.x.current - x, y: this.y.current - y },
+      strength
+    )
+    let resultVector = {
+      x: newVector.x + this.oscillateVector.x,
+      y: newVector.y + this.oscillateVector.y,
+    }
+    const magnitude = Math.sqrt(resultVector.x ** 2 + resultVector.y ** 2)
+    if (magnitude > this.oscillateMax) {
+      resultVector = normalizeVector(resultVector, this.oscillateMax)
+    }
+    this.oscillateVector = resultVector
   }
 
   drawLeaf(ctx: CanvasRenderingContext2D) {
+    this.x.current += (this.x.target - this.x.current) * 0.1
+    this.y.current += (this.y.target - this.y.current) * 0.1
     const points: Point[] = this.points.map((point) => {
       const { length, radian } = point
-      return findPosition({ x: this.x, y: this.y }, radian, length)
+      return findPosition(
+        { x: this.x.current, y: this.y.current },
+        radian,
+        length
+      )
     })
     const lastPoint = points[points.length - 1]
     ctx.beginPath()
@@ -50,5 +89,8 @@ export class Leaf {
 
     ctx.stroke()
     ctx.fill()
+  }
+  getPosition() {
+    return { x: this.x.current, y: this.y.current }
   }
 }

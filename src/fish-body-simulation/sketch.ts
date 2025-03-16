@@ -1,5 +1,5 @@
 import { Fish } from "./fish/fish"
-import { random, getRandom, Point } from "./functions"
+import { random, getRandom, Point, dist, map } from "./functions"
 import { Leaf } from "./leaf/leaf"
 import { Ripple } from "./ripple/ripple"
 
@@ -45,7 +45,7 @@ export const animateFish = () => {
   const fishFinColor = "rgb(30, 30, 30)"
   const fishOutlineColor = "rgb(155, 155, 155)"
   const fishTailColor = "rgb(30, 30, 30)"
-  const leafColor = "rgb(68, 173, 54)"
+  const leafColor = "rgb(64, 138, 55)"
 
   const button = document.createElement("a")
   button.style.position = "absolute"
@@ -83,7 +83,7 @@ export const animateFish = () => {
     const y = random(0, canvas.height)
     const size = Math.sqrt(canvas.width ** 2 + canvas.height ** 2)
     const radius = random(size * 0.02, size * 0.05)
-    return new Leaf(x, y, radius, 32)
+    return new Leaf(x, y, radius, 64)
   })
 
   const mousePosition = { x: 0, y: 0 }
@@ -118,7 +118,17 @@ export const animateFish = () => {
     if (new Date().getTime() - lastFrame >= 1000 / frameRate) {
       fishes.forEach((fish) => {
         fish.update(canvas)
+        const { x, y } = fish.getBounds().centerPoint
+        leaves.forEach((leaf) => {
+          const x1 = leaf.getPosition().x
+          const y1 = leaf.getPosition().y
+          const distance = dist(x, y, x1, y1)
+          if (distance >= fish.getWidth() * 2) return
+          const magnitude = fish.getVelocity() / distance
+          leaf.applyOscillation(x, y, magnitude)
+        })
       })
+      leaves.forEach((leaf) => leaf.update())
       lastFrame = new Date().getTime()
     }
 

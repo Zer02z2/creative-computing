@@ -1,6 +1,6 @@
 import { Chain } from "./chain"
 import { Cube } from "./cube"
-import { drawCircle, findTangent, map2, random } from "../functions"
+import { drawCircle, findTangent, map, random } from "../functions"
 import { Ripple } from "../ripple/ripple"
 
 const bodyPoints = [
@@ -119,7 +119,7 @@ export class Fish {
       const startPoint = this.body.circles[backFin.position].getPosition()
       const nextPoint = this.body.circles[backFin.position + 1].getPosition()
       const radian = findTangent(startPoint, nextPoint) + backFin.radian
-      backFin.backFin.constrainMove(startPoint.x, startPoint.y, radian, 1)
+      backFin.backFin.constrainMove(startPoint.x, startPoint.y, radian, 0)
     })
     this.fins.forEach((fin, index) => {
       const finStartPoint = this.body.circles[fin.position].getPosition()
@@ -258,13 +258,16 @@ export class Fish {
     const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
     return velocity > this.cube.vMax
   }
+  getVelocity() {
+    return Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
+  }
   createRipple() {
     const centerCircle =
       this.body.circles[Math.floor(this.body.circles.length / 2)]
     const x = centerCircle.x
     const y = centerCircle.y
     const velocity = Math.sqrt(this.cube.vX ** 2 + this.cube.vY ** 2)
-    const intensity = map2(velocity, this.cube.vMax, this.cube.vDash, 0, 100)
+    const intensity = map(velocity, this.cube.vMax, this.cube.vDash, 0, 100)
     const ripple = new Ripple(x, y, intensity, 0)
     this.rippleCooldown = generateRandomCooldown()
     return ripple
@@ -286,6 +289,9 @@ export class Fish {
   }
   unmount() {
     this.clickBox.parentElement?.removeChild(this.clickBox)
+  }
+  getWidth() {
+    return this.body.circles[4].d
   }
 }
 

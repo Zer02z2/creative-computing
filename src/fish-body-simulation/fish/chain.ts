@@ -5,7 +5,7 @@ import {
   findTangent,
   isOnLeft,
   line,
-  map2,
+  map,
   Point,
 } from "../functions"
 
@@ -48,7 +48,7 @@ export class Chain {
       const oscillateRadian =
         Math.sin(this.frameCount + oscillateOffset) *
         oscillateScale *
-        map2(i, 0, this.circles.length, 0.5, 3)
+        map(i, 0, this.circles.length, 0.5, 3)
 
       this.circles[i].followBody(
         this.circles[i - 1],
