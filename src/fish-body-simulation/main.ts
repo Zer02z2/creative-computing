@@ -1,4 +1,4 @@
-import { animateFish } from "./sketch"
+import { animateFish } from "./sketch/sketch"
 
 const init = () => {
   const cursorSize = 1.5

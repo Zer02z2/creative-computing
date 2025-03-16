@@ -296,5 +296,5 @@ export class Fish {
 }
 
 const generateRandomCooldown = () => {
-  return random(200, 600)
+  return random(400, 800)
 }

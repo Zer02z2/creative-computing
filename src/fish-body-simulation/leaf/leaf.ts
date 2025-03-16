@@ -32,7 +32,7 @@ export class Leaf {
   update() {
     const { x, y } = this.oscillateVector
     const acceleration = Math.sqrt(x ** 2 + y ** 2)
-    this.frameCount += 0.1 * Math.log(0.3 * acceleration + 1)
+    this.frameCount += 0.1 * Math.log(0.01 * acceleration + 1)
     const xOffset = Math.sin(this.frameCount) * x
     const yOffset = Math.sin(this.frameCount) * y
     this.x.target = this.x.original + xOffset

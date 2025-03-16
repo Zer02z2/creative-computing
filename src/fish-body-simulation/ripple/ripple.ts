@@ -41,7 +41,7 @@ export class Ripple {
     this.remainingRipples = Math.floor(map(intensity, 0, 255, 0, 3))
   }
 
-  update(ctx: CanvasRenderingContext2D) {
+  update() {
     if (
       this.remainingRipples &&
       new Date().getTime() - this.startMillis > this.interval
@@ -63,15 +63,17 @@ export class Ripple {
 
       ripple.currentIntensity -= this.speed
       ripple.currentRadius += this.speed * 5
-
+      if (ripple.currentIntensity <= 0) this.rippleGroup.splice(i, 1)
+    }
+  }
+  drawRipple(ctx: CanvasRenderingContext2D) {
+    this.rippleGroup.forEach((ripple) => {
       const opacity = map(ripple.currentIntensity, 0, 255, 0, 1)
       ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
       ctx.beginPath()
       ctx.arc(this.x, this.y, ripple.currentRadius, 0, 2 * Math.PI)
       ctx.stroke()
-
-      if (ripple.currentIntensity <= 0) this.rippleGroup.splice(i, 1)
-    }
+    })
   }
   isEmpty() {
     return this.rippleGroup.length <= 0
