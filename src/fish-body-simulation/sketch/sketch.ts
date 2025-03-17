@@ -1,6 +1,7 @@
 import { random } from "../functions"
 import { Ripple } from "../ripple/ripple"
 import {
+  canvasExist,
   colors,
   createDuckWeeds,
   createFishes,
@@ -63,6 +64,7 @@ export const animateFish = () => {
   })
 
   const animate = () => {
+    if (!canvasExist()) return
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 

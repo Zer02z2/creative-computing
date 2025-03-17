@@ -3,6 +3,11 @@ import { getRandom, random } from "../functions"
 import { DuckWeed } from "../leaf/duckweek"
 import { Leaf } from "../leaf/leaf"
 
+export const canvasExist = () => {
+  const canvasDiv = document.getElementById("fish-canvas")
+  return canvasDiv ? true : false
+}
+
 export const initCanvas = () => {
   const canvasDiv = document.getElementById("fish-canvas")
   if (!canvasDiv) return
