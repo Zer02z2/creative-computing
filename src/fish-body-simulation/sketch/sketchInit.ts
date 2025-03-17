@@ -1,5 +1,6 @@
 import { Fish } from "../fish/fish"
 import { getRandom, random } from "../functions"
+import { DuckWeed } from "../leaf/duckweek"
 import { Leaf } from "../leaf/leaf"
 
 export const initCanvas = () => {
@@ -79,7 +80,15 @@ export const createLeaves = (number: number, canvas: HTMLCanvasElement) => {
     return new Leaf(x, y, radius, 64)
   })
 }
-
+export const createDuckWeeds = (number: number, canvas: HTMLCanvasElement) => {
+  return Array.from({ length: number }).map(() => {
+    const x = random(0, canvas.width)
+    const y = random(0, canvas.height)
+    const size = Math.sqrt(canvas.width ** 2 + canvas.height ** 2)
+    const radius = random(size * 0.001, size * 0.005)
+    return new DuckWeed(x, y, radius, 4)
+  })
+}
 export const colors = {
   rigColorSets: {
     colors: [
@@ -89,9 +98,10 @@ export const colors = {
     index: 0,
   },
   backgroundColor: "rgb(10, 10, 10)",
-  fishColor: "rgb(20, 20, 20)",
+  fishColor: "rgb(29, 29, 29)",
   fishFinColor: "rgb(30, 30, 30)",
   fishOutlineColor: "rgb(155, 155, 155)",
   fishTailColor: "rgb(30, 30, 30)",
   leafColor: "rgb(64, 138, 55)",
+  duckWeedColor: "rgb(77, 189, 55)",
 }

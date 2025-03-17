@@ -20,7 +20,7 @@ export class Cube {
     this.x = x
     this.y = y
     this.vMax = vMax
-    this.vMin = vMax * 0.2
+    this.vMin = vMax * 0.1
     this.vDash = vMax * 2
     this.vX = random(0, this.vMax)
     this.vY = random(0, this.vMax)
@@ -35,18 +35,18 @@ export class Cube {
       y,
       vMax,
       160,
-      [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
   }
   update(xBound: number, yBound: number) {
     if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.002) {
       this.vX = this.boostVelocity()
-      this.vY = random(0, this.vX)
+      //this.vY = random(-this.vX, this.vX)
       this.directionX *= Math.random() < 0.2 ? -1 : 1
     }
     if (Math.random() < this.pBoost || this.vY - this.vMin <= 0.002) {
       this.vY = this.boostVelocity()
-      this.vX = random(0, this.vY)
+      //this.vX = random(-this.vY, this.vY)
       this.directionY *= Math.random() < 0.2 ? -1 : 1
     }
 

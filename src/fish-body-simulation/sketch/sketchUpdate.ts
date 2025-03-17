@@ -1,5 +1,6 @@
 import { Fish } from "../fish/fish"
 import { dist, map, Point } from "../functions"
+import { DuckWeed } from "../leaf/duckweek"
 import { Leaf } from "../leaf/leaf"
 import { Ripple } from "../ripple/ripple"
 import { colors } from "./sketchInit"
@@ -8,19 +9,23 @@ export const fixedFrameUpdates = (
   canvas: HTMLCanvasElement,
   fishes: Fish[],
   leaves: Leaf[],
-  ripples: Ripple[]
+  ripples: Ripple[],
+  duckWeeds: DuckWeed[]
 ) => {
   fishes.forEach((fish) => {
     fish.update(canvas)
     detectFishLeafCollision(fish, leaves)
+    detectFishDuckWeedCollision(fish, duckWeeds)
   })
   ripples.forEach((ripple) => {
     detectRippleLeafCollision(ripple, leaves)
+    detectRippleDuckWeedCollision(ripple, duckWeeds)
     const reflectRipples = ripple.detectBouncing(canvas)
     if (!reflectRipples) return
     ripples.push(...reflectRipples)
   })
   leaves.forEach((leaf) => leaf.update())
+  duckWeeds.forEach((duckWeed) => duckWeed.update(canvas))
 }
 
 export const dynamicFrameUpdates = (
@@ -107,6 +112,18 @@ export const renderRipples = (
   ripples.forEach((ripple) => ripple.drawRipple(ctx))
 }
 
+export const renderDuckWeeds = (
+  ctx: CanvasRenderingContext2D,
+  duckWeeds: DuckWeed[]
+) => {
+  duckWeeds.forEach((duckWeed) => {
+    ctx.fillStyle = colors.duckWeedColor
+    ctx.strokeStyle = colors.backgroundColor
+    ctx.lineWidth = 1
+    duckWeed.drawWeed(ctx)
+  })
+}
+
 interface Rect {
   x: number
   y: number
@@ -153,9 +170,46 @@ const detectRippleLeafCollision = (ripple: Ripple, leaves: Leaf[]) => {
         0,
         255,
         0,
-        0.3
+        1
       )
       leaf.applyOscillation(x, y, magnitude)
+    }
+  })
+}
+
+const detectFishDuckWeedCollision = (fish: Fish, duckWeeds: DuckWeed[]) => {
+  const { x, y } = fish.getBounds().centerPoint
+  duckWeeds.forEach((duckWeed) => {
+    const x1 = duckWeed.getPosition().x
+    const y1 = duckWeed.getPosition().y
+    const distance = dist(x, y, x1, y1)
+    if (distance >= fish.getWidth() * 2) return
+    const magnitude = (0.2 * fish.getVelocity()) / distance
+    duckWeed.applyVector(x, y, magnitude)
+  })
+}
+
+const detectRippleDuckWeedCollision = (
+  ripple: Ripple,
+  duckWeeds: DuckWeed[]
+) => {
+  const { x, y } = ripple
+  duckWeeds.forEach((duckWeed) => {
+    const x1 = duckWeed.getPosition().x
+    const y1 = duckWeed.getPosition().y
+    const distance = dist(x, y, x1, y1)
+    for (let i = 0; i < ripple.rippleGroup.length; i++) {
+      const rippleRadius = ripple.rippleGroup[i].currentRadius
+      if (distance > rippleRadius + duckWeed.radius) return
+      if (distance < rippleRadius - duckWeed.radius) continue
+      const magnitude = map(
+        ripple.rippleGroup[i].currentIntensity,
+        0,
+        255,
+        0,
+        0.1
+      )
+      duckWeed.applyVector(x, y, magnitude)
     }
   })
 }

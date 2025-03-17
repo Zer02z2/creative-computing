@@ -2,7 +2,7 @@ import { map } from "../functions"
 
 interface RippleData {
   initialIntensity: number
-  currentIntensity: number
+  currentIntensity: number // between 0 and 255
   currentRadius: number
   edges: {
     left: number
