@@ -22,10 +22,7 @@ export const fixedFrameUpdates = (
     fishes.forEach((otherFish, otherIndex) => {
       if (index === otherIndex) return
       if (isOverlapping(fish.getBounds(), otherFish.getBounds())) {
-        otherFish.triggerDash(
-          fish.getBounds().centerPoint.x,
-          fish.getBounds().centerPoint.y
-        )
+        otherFish.triggerDash()
       }
     })
     const currentTime = new Date().getTime()
@@ -56,8 +53,7 @@ export const fixedFrameUpdates = (
 
 export const dynamicFrameUpdates = (
   canvas: HTMLCanvasElement,
-  fishes: Fish[],
-  ripples: Ripple[]
+  fishes: Fish[]
 ) => {
   fishes.forEach((fish) => {
     fish.move(canvas)

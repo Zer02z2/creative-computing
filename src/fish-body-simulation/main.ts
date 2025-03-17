@@ -115,8 +115,8 @@ const init = () => {
   const animate = () => {
     requestAnimationFrame(animate)
     const { xTarget, yTarget } = cursorLocation
-    cursorLocation.x += (xTarget - cursorLocation.x) * 0.4
-    cursorLocation.y += (yTarget - cursorLocation.y) * 0.4
+    cursorLocation.x += (xTarget - cursorLocation.x) * 0.2
+    cursorLocation.y += (yTarget - cursorLocation.y) * 0.2
     const { x, y } = cursorLocation
 
     const hoveredLink = findOverlapLink(x, y)

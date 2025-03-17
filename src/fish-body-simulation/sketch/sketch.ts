@@ -82,7 +82,7 @@ export const animateFish = () => {
       lastFrame = new Date().getTime()
     }
 
-    dynamicFrameUpdates(canvas, fishes, ripples)
+    dynamicFrameUpdates(canvas, fishes)
 
     ctx.fillStyle = colors.backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)

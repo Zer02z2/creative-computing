@@ -87,11 +87,11 @@ export class Fish {
     clickBox.style.right = "0px"
     clickBox.style.border = "1px solid red"
     clickBox.style.opacity = "0"
-    clickBox.addEventListener("mouseover", (event) => {
-      this.triggerDash(event.clientX, event.clientY)
+    clickBox.addEventListener("mouseover", () => {
+      this.triggerDash()
     })
-    clickBox.addEventListener("mousedown", (event) => {
-      this.triggerDash(event.clientX, event.clientY)
+    clickBox.addEventListener("mousedown", () => {
+      this.triggerDash()
     })
     canvasDiv.appendChild(clickBox)
     this.clickBox = clickBox
@@ -240,7 +240,7 @@ export class Fish {
     this.clickBox.style.opacity = "0"
   }
 
-  triggerDash(x: number, y: number) {
+  triggerDash() {
     const vX = this.cube.vX * this.cube.directionX
     const vY = this.cube.vY * this.cube.directionY
     const radian = Math.atan2(vY, vX)
