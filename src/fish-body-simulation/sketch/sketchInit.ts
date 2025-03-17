@@ -102,6 +102,6 @@ export const colors = {
   fishFinColor: "rgb(30, 30, 30)",
   fishOutlineColor: "rgb(155, 155, 155)",
   fishTailColor: "rgb(30, 30, 30)",
-  leafColor: "rgb(64, 138, 55)",
-  duckWeedColor: "rgb(77, 189, 55)",
+  leafColor: "rgb(62, 145, 60)",
+  duckWeedColor: "rgb(93, 206, 71)",
 }

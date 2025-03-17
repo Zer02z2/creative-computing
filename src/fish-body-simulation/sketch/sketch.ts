@@ -52,8 +52,9 @@ export const animateFish = () => {
     mousePosition.x = event.clientX
     mousePosition.y = event.clientY
   })
+  const dpr = window.devicePixelRatio || 1
   document.addEventListener("mousedown", (event) => {
-    const ripple = new Ripple(event.clientX, event.clientY, 100, 0)
+    const ripple = new Ripple(event.clientX * dpr, event.clientY * dpr, 100, 0)
     ripples.push(ripple)
   })
 
