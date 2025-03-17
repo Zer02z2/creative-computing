@@ -1,8 +1,9 @@
-import { map } from "../functions"
+import { lerp, map } from "../functions"
 
 interface RippleData {
   initialIntensity: number
   currentIntensity: number // between 0 and 255
+  targetRadius: number
   currentRadius: number
   edges: {
     left: number
@@ -28,12 +29,13 @@ export class Ripple {
     this.interval = 150
     this.x = x
     this.y = y
-    this.speed = intensity / 255
+    this.speed = intensity / 100
     this.rippleGroup = [
       {
         initialIntensity: intensity,
         currentIntensity: intensity,
         edges: { left: x, right: x, top: y, bottom: y },
+        targetRadius: radius,
         currentRadius: radius,
       },
     ]
@@ -50,6 +52,7 @@ export class Ripple {
         initialIntensity: this.currentIntensity,
         currentIntensity: this.currentIntensity,
         currentRadius: 0,
+        targetRadius: 0,
         edges: { left: this.x, right: this.x, top: this.y, bottom: this.y },
       })
       this.startMillis = new Date().getTime()
@@ -62,13 +65,18 @@ export class Ripple {
       const ripple = this.rippleGroup[i]
 
       ripple.currentIntensity -= this.speed
-      ripple.currentRadius += this.speed * 5
+      ripple.targetRadius += this.speed * 5
       if (ripple.currentIntensity <= 0) this.rippleGroup.splice(i, 1)
     }
   }
   drawRipple(ctx: CanvasRenderingContext2D) {
     this.rippleGroup.forEach((ripple) => {
       const opacity = map(ripple.currentIntensity, 0, 255, 0, 1)
+      ripple.currentRadius = lerp(
+        ripple.currentRadius,
+        ripple.targetRadius,
+        0.1
+      )
       ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
       ctx.beginPath()
       ctx.arc(this.x, this.y, ripple.currentRadius, 0, 2 * Math.PI)

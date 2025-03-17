@@ -28,7 +28,7 @@ export const initCanvas = () => {
   const span = document.createElement("span")
   span.className = "body-text-heavy"
   span.style.color = "white"
-  span.innerHTML = "show secret"
+  span.innerHTML = "show computation"
   button.appendChild(span)
   canvasDiv.appendChild(button)
   return {
@@ -92,8 +92,8 @@ export const createDuckWeeds = (number: number, canvas: HTMLCanvasElement) => {
 export const colors = {
   rigColorSets: {
     colors: [
-      { fish: "rgb(192, 102, 192)", box: "rgb(68, 153, 43)" },
       { fish: "rgb(36, 109, 243)", box: "rgb(59, 192, 42)" },
+      { fish: "rgb(192, 102, 192)", box: "rgb(68, 153, 43)" },
     ],
     index: 0,
   },

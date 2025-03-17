@@ -12,32 +12,11 @@ export const fixedFrameUpdates = (
   ripples: Ripple[],
   duckWeeds: DuckWeed[]
 ) => {
-  fishes.forEach((fish) => {
+  fishes.forEach((fish, index) => {
     fish.update(canvas)
     detectFishLeafCollision(fish, leaves)
     detectFishDuckWeedCollision(fish, duckWeeds)
-  })
-  ripples.forEach((ripple) => {
-    detectRippleLeafCollision(ripple, leaves)
-    detectRippleDuckWeedCollision(ripple, duckWeeds)
-    const reflectRipples = ripple.detectBouncing(canvas)
-    if (!reflectRipples) return
-    ripples.push(...reflectRipples)
-  })
-  leaves.forEach((leaf) => leaf.update())
-  duckWeeds.forEach((duckWeed) => duckWeed.update(canvas))
-}
 
-export const dynamicFrameUpdates = (
-  canvas: HTMLCanvasElement,
-  fishes: Fish[],
-  ripples: Ripple[]
-) => {
-  fishes.forEach((fish) => {
-    fish.move(canvas)
-  })
-  // detect if any fish dash into each other
-  fishes.forEach((fish, index) => {
     const isDashing = fish.getIsDashing()
     if (!isDashing) return
     fishes.forEach((otherFish, otherIndex) => {
@@ -56,6 +35,15 @@ export const dynamicFrameUpdates = (
       fish.lastRippleTime = currentTime
     }
   })
+  ripples.forEach((ripple) => {
+    detectRippleLeafCollision(ripple, leaves)
+    detectRippleDuckWeedCollision(ripple, duckWeeds)
+    const reflectRipples = ripple.detectBouncing(canvas)
+    if (!reflectRipples) return
+    ripples.push(...reflectRipples)
+  })
+  leaves.forEach((leaf) => leaf.update())
+  duckWeeds.forEach((duckWeed) => duckWeed.update(canvas))
 
   if (ripples.length > 0) {
     for (let i = ripples.length - 1; i >= 0; i--) {
@@ -64,6 +52,16 @@ export const dynamicFrameUpdates = (
       if (ripple.isEmpty()) ripples.splice(i, 1)
     }
   }
+}
+
+export const dynamicFrameUpdates = (
+  canvas: HTMLCanvasElement,
+  fishes: Fish[],
+  ripples: Ripple[]
+) => {
+  fishes.forEach((fish) => {
+    fish.move(canvas)
+  })
 }
 
 export const renderFish = (

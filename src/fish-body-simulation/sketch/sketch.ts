@@ -39,7 +39,7 @@ export const animateFish = () => {
 
   button.addEventListener("mouseup", () => {
     showRig = !showRig
-    span.innerHTML = `${showRig ? "hide" : "show"} secret`
+    span.innerHTML = `${showRig ? "hide" : "show"} computation`
     if (showRig) {
       colors.rigColorSets.index++
       if (colors.rigColorSets.index >= colors.rigColorSets.colors.length) {
