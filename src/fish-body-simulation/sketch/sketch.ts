@@ -78,6 +78,7 @@ export const animateFish = () => {
       })
     } else if (event.key === "v") {
       if (chosenFishIndex === -1) return
+      if (fishes.length < 1) return
       fishes[chosenFishIndex].leaveTarget = randomPointOutsideRect(
         canvas.width,
         canvas.height

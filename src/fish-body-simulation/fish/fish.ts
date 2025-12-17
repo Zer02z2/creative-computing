@@ -109,7 +109,18 @@ export class Fish {
     const width = canvas.width
     const height = canvas.height
 
-    if (this.onLeave) this.cube.chase(this.leaveTarget.x, this.leaveTarget.y)
+    if (this.onLeave) {
+      this.cube.chase(this.leaveTarget.x, this.leaveTarget.y)
+      const bounds = this.getBounds()
+      if (
+        bounds.x + bounds.width < 0 ||
+        bounds.x > width ||
+        bounds.y + bounds.height < 0 ||
+        bounds.y > height
+      ) {
+        this.endLeave = true
+      }
+    }
     this.cube.update(width, height, !this.onLeave)
   }
 
