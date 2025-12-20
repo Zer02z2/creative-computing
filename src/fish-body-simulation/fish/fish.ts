@@ -1,6 +1,6 @@
 import { Chain } from "./chain"
 import { Cube } from "./cube"
-import { drawCircle, findTangent, map, random } from "../functions"
+import { drawCircle, findTangent, map, random, Point } from "../functions"
 import { Ripple } from "../ripple/ripple"
 
 const bodyPoints = [
@@ -18,12 +18,17 @@ export class Fish {
   fins: { fin: Chain; radian: number; position: number }[]
   tails: { tail: Chain; radian: number; position: number }[]
   backFins: { backFin: Chain; radian: number; position: number }[]
-  // backFin:
   bounds: { left: number; right: number; top: number; bottom: number }
   clickBox: HTMLAnchorElement
   cube: Cube
   rippleCooldown: number
   lastRippleTime: number
+  showRig: boolean = false
+
+  // leave animation
+  onLeave: boolean = false
+  endLeave: boolean = false
+  leaveTarget: Point = { x: -100, y: -100 }
 
   constructor(
     x: number,
@@ -103,7 +108,20 @@ export class Fish {
     if (!ctx) return
     const width = canvas.width
     const height = canvas.height
-    this.cube.update(width, height)
+
+    if (this.onLeave) {
+      this.cube.chase(this.leaveTarget.x, this.leaveTarget.y)
+      const bounds = this.getBounds()
+      if (
+        bounds.x + bounds.width < 0 ||
+        bounds.x > width ||
+        bounds.y + bounds.height < 0 ||
+        bounds.y > height
+      ) {
+        this.endLeave = true
+      }
+    }
+    this.cube.update(width, height, !this.onLeave)
   }
 
   move(canvas: HTMLCanvasElement) {
@@ -145,6 +163,10 @@ export class Fish {
       )
     })
     this.updateBounds()
+  }
+
+  chase(x: number, y: number) {
+    this.cube.chase(x, y)
   }
 
   drawBody(ctx: CanvasRenderingContext2D) {

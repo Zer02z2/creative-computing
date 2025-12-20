@@ -113,3 +113,24 @@ export const normalizeVector = (vector: Point, magnitude: number) => {
   const vY = magnitude * Math.sin(radian)
   return { x: vX, y: vY }
 }
+
+export const randomPointOutsideRect = (
+  width: number,
+  height: number
+): Point => {
+  const xMin = -width
+  const xMax = width * 2
+  const yMin = -height
+  const yMax = height * 2
+  const x = random(xMin, xMax)
+  let y
+  if (x < -width * 0.5 || x > width * 1.5) {
+    y = random(yMin, yMax)
+  } else {
+    y =
+      Math.random() < 0.5
+        ? random(yMin, -height * 0.5)
+        : random(height * 1.5, yMax)
+  }
+  return { x, y }
+}

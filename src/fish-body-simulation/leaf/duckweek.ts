@@ -7,6 +7,7 @@ export class DuckWeed {
   points: { length: number; radian: number }[]
   moveVector: { x: number; y: number }
   vectorMax: number
+  longestRadius: number = 0
 
   constructor(x: number, y: number, radius: number, segments: number) {
     this.x = { current: x, target: x }
@@ -18,6 +19,7 @@ export class DuckWeed {
     //@ts-ignore
     this.points = Array.from({ length: segments }).map((num, index) => {
       const length = random(radius * 0.98, radius * 1.02)
+      if (length > this.longestRadius) this.longestRadius = length
       const radian = firstPointRadian + segmentRadian * index
       return { length: length, radian: radian }
     })
@@ -29,13 +31,20 @@ export class DuckWeed {
     this.x.target += x
     this.y.target += y
 
-    if (this.x.target <= 0) this.x.target = 0
-    if (this.x.target >= canvas.width) this.x.target = canvas.width
-    if (this.y.target <= 0) this.y.target = 0
-    if (this.y.target >= canvas.height) this.y.target = canvas.height
-
     this.moveVector.x *= 0.99
     this.moveVector.y *= 0.99
+
+    if (
+      this.x.current + this.longestRadius < 0 ||
+      this.x.current - this.longestRadius > canvas.width ||
+      this.y.current + this.longestRadius < 0 ||
+      this.y.current - this.longestRadius > canvas.height
+    ) {
+      this.x.current = random(0, canvas.width)
+      this.x.target = this.x.current
+      this.y.current = random(0, canvas.height)
+      this.y.target = this.y.current
+    }
   }
   applyVector(x: number, y: number, strength: number) {
     const newVector = normalizeVector(

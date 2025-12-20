@@ -5,15 +5,32 @@ import { Leaf } from "../leaf/leaf"
 import { Ripple } from "../ripple/ripple"
 import { colors } from "./sketchInit"
 
+export type ChaseState = {
+  steate: boolean
+  direction: "bottomLeft" | "bottomRight" | "topCenter" | undefined
+}
+
 export const fixedFrameUpdates = (
   canvas: HTMLCanvasElement,
   fishes: Fish[],
   leaves: Leaf[],
   ripples: Ripple[],
-  duckWeeds: DuckWeed[]
+  duckWeeds: DuckWeed[],
+  chaseState: ChaseState
 ) => {
   fishes.forEach((fish, index) => {
+    if (chaseState.steate) {
+      if (chaseState.direction === "bottomLeft") {
+        fish.chase(0, canvas.height)
+      } else if (chaseState.direction === "bottomRight") {
+        fish.chase(canvas.width, canvas.height)
+      } else if (chaseState.direction === "topCenter") {
+        fish.chase(canvas.width / 2, 0)
+      }
+    }
     fish.update(canvas)
+    if (fish.endLeave) {
+    }
     detectFishLeafCollision(fish, leaves)
     detectFishDuckWeedCollision(fish, duckWeeds)
 
@@ -32,6 +49,16 @@ export const fixedFrameUpdates = (
       fish.lastRippleTime = currentTime
     }
   })
+
+  // Check fish leaving
+  for (let i = fishes.length - 1; i >= 0; i--) {
+    if (fishes[i].endLeave) {
+      fishes[i].unmount()
+      fishes.splice(i, 1)
+      console.log(fishes.length)
+    }
+  }
+
   ripples.forEach((ripple) => {
     detectRippleLeafCollision(ripple, leaves)
     detectRippleDuckWeedCollision(ripple, duckWeeds)
@@ -39,6 +66,7 @@ export const fixedFrameUpdates = (
     if (!reflectRipples) return
     ripples.push(...reflectRipples)
   })
+
   leaves.forEach((leaf) => leaf.update())
   duckWeeds.forEach((duckWeed) => duckWeed.update(canvas))
 
@@ -60,11 +88,7 @@ export const dynamicFrameUpdates = (
   })
 }
 
-export const renderFish = (
-  ctx: CanvasRenderingContext2D,
-  fishes: Fish[],
-  showRig: boolean
-) => {
+export const renderFish = (ctx: CanvasRenderingContext2D, fishes: Fish[]) => {
   fishes.forEach((fish) => {
     ctx.strokeStyle = colors.fishOutlineColor
     ctx.lineWidth = 2
@@ -74,7 +98,7 @@ export const renderFish = (
     fish.drawTail(ctx)
     ctx.fillStyle = colors.fishColor
     fish.drawBody(ctx)
-    if (showRig) {
+    if (fish.showRig) {
       const rigColor = colors.rigColorSets.colors[colors.rigColorSets.index]
       ctx.fillStyle = colors.fishColor
       ctx.strokeStyle = rigColor.fish

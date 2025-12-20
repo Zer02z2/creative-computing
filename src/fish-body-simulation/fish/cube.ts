@@ -38,7 +38,7 @@ export class Cube {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     )
   }
-  update(xBound: number, yBound: number) {
+  update(xBound: number, yBound: number, checkBound: boolean = true) {
     if (Math.random() < this.pBoost || this.vX - this.vMin <= 0.002) {
       this.vX = this.boostVelocity()
       //this.vY = random(-this.vX, this.vX)
@@ -60,7 +60,7 @@ export class Cube {
 
     this.x += this.vX * this.directionX
     this.y += this.vY * this.directionY
-    this.preventOverBoarder(xBound, yBound)
+    if (checkBound) this.preventOverBoarder(xBound, yBound)
 
     this.chain.simpleMove(this.x, this.y, xBound, yBound)
   }
@@ -89,6 +89,20 @@ export class Cube {
     this.vY = Math.abs(vY)
     this.directionX = vX >= 0 ? 1 : -1
     this.directionY = vY >= 0 ? 1 : -1
+  }
+  chase(x: number, y: number) {
+    let dx = x - this.x
+    let dy = y - this.y
+    const mag = Math.sqrt(dx * dx + dy * dy)
+    if (mag < 1) return
+    if (mag > this.vMax) {
+      dx *= (this.vMax / mag) * 1.2
+      dy *= (this.vMax / mag) * 1.2
+    }
+    this.vX += Math.abs(dx) * 0.01
+    this.directionX = this.x < x ? 1 : -1
+    this.vY += Math.abs(dy) * 0.01
+    this.directionY = this.y < y ? 1 : -1
   }
   drawRig(ctx: CanvasRenderingContext2D) {
     rect(ctx, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
