@@ -1,0 +1,53 @@
+Artwork License
+===============
+
+Artwork (c) 2024-2026 Zongze Chen. All rights reserved except as licensed below.
+
+WHAT THIS COVERS
+----------------
+
+This license applies to the artistic works of this repository -- that is, the
+visual and audiovisual output produced by running the sketches, including:
+
+  - the rendered sketches as displayed at
+    https://zer02z2.github.io/creative-computing/
+  - any still image, screenshot, screen recording, video, or print made from
+    them
+  - the specific visual designs, compositions, and forms they express
+
+It does NOT cover the source code, which is licensed under the MIT License --
+see LICENSE. It also does not cover third-party assets included for tooling
+purposes (public/vite.svg, docs/vite.svg, src/typescript.svg), which remain
+under their respective owners' licenses.
+
+THE LICENSE
+-----------
+
+The artwork is licensed under the Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International License
+(CC BY-NC-ND 4.0).
+
+  Human-readable summary: https://creativecommons.org/licenses/by-nc-nd/4.0/
+  Full legal code:        https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+
+In short, you are free to share the artwork -- copy and redistribute it in any
+medium or format -- provided that:
+
+  BY  Attribution      You give appropriate credit to Zongze Chen, link to this
+                       repository, and indicate if changes were made.
+
+  NC  NonCommercial    You may not use the artwork for commercial purposes.
+
+  ND  NoDerivatives    If you remix, transform, or build upon the artwork, you
+                       may not distribute the modified material.
+
+WHAT THIS DOES NOT RESTRICT
+---------------------------
+
+Copyright protects expression, not ideas. Nothing here prevents you from
+reading the code, learning the techniques, or writing your own work that uses
+the same algorithms or aesthetic -- the MIT License on the code explicitly
+invites that. What is reserved is this specific artwork and its output.
+
+For uses beyond this license -- commercial use, derivative works, exhibition,
+or print -- please ask. Contact via https://github.com/Zer02z2
